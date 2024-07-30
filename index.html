@@ -21,8 +21,11 @@
         .stats-container img {
             margin: 10px;
         }
-        .visitor-count {
-            margin: 20px 0;
+        .about-me {
+            margin: 20px;
+            padding: 20px;
+            background-color: #44475a;
+            border-radius: 10px;
         }
     </style>
 </head>
@@ -46,31 +49,15 @@
     <h2>Snake go brrrrrr</h2>
     <a href="#"><img src="contributions.svg" alt="Snake animation"></a>
 
-    <div class="visitor-count">
-        <p>Visitor count</p>
-        <span id="visitor-count">0</span>
+    <div class="about-me">
+        <h2>About Me</h2>
+        <p>Hi, I'm Janco Nel, a passionate developer specializing in cybersecurity and Windows tools. My projects range from a Windows Privilege Escalation Toolkit to advanced persistence mechanisms and command and control servers. I enjoy creating tools that push the boundaries of what's possible and help make systems more secure.</p>
+        <p>In my free time, I love experimenting with new technologies, contributing to open-source projects, and continually learning about the ever-evolving field of cybersecurity. Feel free to explore my GitHub profile to see my work and contributions.</p>
     </div>
 
     <audio id="background-music" autoplay loop>
         <source src="song.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
-
-    <script>
-        // Function to update visitor count
-        function updateVisitorCount() {
-            const countKey = 'visitor-count';
-            let count = localStorage.getItem(countKey);
-            if (!count) {
-                count = 0;
-            }
-            count = parseInt(count) + 1;
-            localStorage.setItem(countKey, count);
-            document.getElementById('visitor-count').innerText = count;
-        }
-
-        // Update the visitor count on page load
-        document.addEventListener('DOMContentLoaded', updateVisitorCount);
-    </script>
 </body>
 </html>
