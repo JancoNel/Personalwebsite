@@ -3,12 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello, World!</title>
+    <title>Janco Nel's Personal Site</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #282a36;
+            color: #f8f8f2;
+        }
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        .stats-container img {
+            margin: 10px;
+        }
+        .visitor-count {
+            margin: 20px 0;
+        }
+    </style>
 </head>
 <body>
+    <h1>One line at a time</h1>
 
-    <h1>Hello, World!</h1>
-    <p>This is a simple HTML page.</p>
+    <div class="stats-container">
+        <a href="#">
+            <img height="200" src="https://my-stats-43gk.vercel.app/api?username=JancoNel&show_icons=true&theme=radical&hide=contribs,issues&show=discussions_answered&rank_icon=github&include_all_commits=true&card_width=150" alt="GitHub Stats" />
+        </a>
+        <a href="#">
+            <img height="200" src="https://my-stats-43gk.vercel.app/api/top-langs/?username=JancoNel&hide=html,scss,css&langs_count=8&layout=compact&theme=radical&card_width=150" alt="Top Languages" />
+        </a>
+    </div>
 
+    <div class="stats-container">
+        <img height="202" src="https://github-readme-streak-stats-git-main-davids-projects-ad77adcc.vercel.app/?user=JancoNel&theme=radical" alt="Streak Stats" />
+        <img height="97" src="https://github-profile-trophy.vercel.app/?username=JancoNel&theme=radical&no-frame=true&title=Stars,Followers,Commits&column=-1" alt="GitHub Trophies" />
+    </div>
+
+    <h2>Snake go brrrrrr</h2>
+    <a href="#"><img src="contributions.svg" alt="Snake animation"></a>
+
+    <div class="visitor-count">
+        <p>Visitor count</p>
+        <span id="visitor-count">0</span>
+    </div>
+
+    <audio id="background-music" autoplay loop>
+        <source src="song.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        // Function to update visitor count
+        function updateVisitorCount() {
+            const countKey = 'visitor-count';
+            let count = localStorage.getItem(countKey);
+            if (!count) {
+                count = 0;
+            }
+            count = parseInt(count) + 1;
+            localStorage.setItem(countKey, count);
+            document.getElementById('visitor-count').innerText = count;
+        }
+
+        // Update the visitor count on page load
+        document.addEventListener('DOMContentLoaded', updateVisitorCount);
+    </script>
 </body>
 </html>
