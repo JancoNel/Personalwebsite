@@ -8,8 +8,28 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #282a36;
+            background-color: #1a1b27;
             color: #f8f8f2;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .about-me {
+            background-color: #2e2f3e;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .github-profile {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .github-profile img {
+            border-radius: 50%;
+            margin-right: 20px;
         }
         .stats-container {
             display: flex;
@@ -21,43 +41,54 @@
         .stats-container img {
             margin: 10px;
         }
-        .about-me {
-            margin: 20px;
-            padding: 20px;
-            background-color: #44475a;
-            border-radius: 10px;
+        h2 {
+            color: #ff79c6;
+        }
+        a {
+            color: #8be9fd;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <h1>One line at a time</h1>
+    <div class="container">
+        <div class="about-me">
+            <h2>About Me</h2>
+            <div class="github-profile">
+                <a href="https://github.com/JancoNel" target="_blank">
+                    <img src="https://avatars.githubusercontent.com/u/17018056?v=4" alt="Janco Nel's Profile Picture" width="100" height="100">
+                </a>
+                <p>Hi, I'm <a href="https://github.com/JancoNel" target="_blank">Janco Nel</a>, a passionate developer specializing in cybersecurity and Windows tools. My projects range from a Windows Privilege Escalation Toolkit to advanced persistence mechanisms and command and control servers. I enjoy creating tools that push the boundaries of what's possible and help make systems more secure.</p>
+            </div>
+            <p>In my free time, I love experimenting with new technologies, contributing to open-source projects, and continually learning about the ever-evolving field of cybersecurity. Feel free to explore my GitHub profile to see my work and contributions.</p>
+        </div>
 
-    <div class="stats-container">
-        <a href="#">
-            <img height="200" src="https://my-stats-43gk.vercel.app/api?username=JancoNel&show_icons=true&theme=radical&hide=contribs,issues&show=discussions_answered&rank_icon=github&include_all_commits=true&card_width=150" alt="GitHub Stats" />
-        </a>
-        <a href="#">
-            <img height="200" src="https://my-stats-43gk.vercel.app/api/top-langs/?username=JancoNel&hide=html,scss,css&langs_count=8&layout=compact&theme=radical&card_width=150" alt="Top Languages" />
-        </a>
+        <h1>One line at a time</h1>
+
+        <div class="stats-container">
+            <a href="#">
+                <img height="200" src="https://my-stats-43gk.vercel.app/api?username=JancoNel&show_icons=true&theme=radical&hide=contribs,issues&show=discussions_answered&rank_icon=github&include_all_commits=true&card_width=150" alt="GitHub Stats" />
+            </a>
+            <a href="#">
+                <img height="200" src="https://my-stats-43gk.vercel.app/api/top-langs/?username=JancoNel&hide=html,scss,css&langs_count=8&layout=compact&theme=radical&card_width=150" alt="Top Languages" />
+            </a>
+        </div>
+
+        <div class="stats-container">
+            <img height="202" src="https://github-readme-streak-stats-git-main-davids-projects-ad77adcc.vercel.app/?user=JancoNel&theme=radical" alt="Streak Stats" />
+            <img height="97" src="https://github-profile-trophy.vercel.app/?username=JancoNel&theme=radical&no-frame=true&title=Stars,Followers,Commits&column=-1" alt="GitHub Trophies" />
+        </div>
+
+        <h2>Snake go brrrrrr</h2>
+        <a href="#"><img src="contributions.svg" alt="Snake animation"></a>
+
+        <audio id="background-music" autoplay loop>
+            <source src="song.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
     </div>
-
-    <div class="stats-container">
-        <img height="202" src="https://github-readme-streak-stats-git-main-davids-projects-ad77adcc.vercel.app/?user=JancoNel&theme=radical" alt="Streak Stats" />
-        <img height="97" src="https://github-profile-trophy.vercel.app/?username=JancoNel&theme=radical&no-frame=true&title=Stars,Followers,Commits&column=-1" alt="GitHub Trophies" />
-    </div>
-
-    <h2>Snake go brrrrrr</h2>
-    <a href="#"><img src="contributions.svg" alt="Snake animation"></a>
-
-    <div class="about-me">
-        <h2>About Me</h2>
-        <p>Hi, I'm Janco Nel, a passionate developer specializing in cybersecurity and Windows tools. My projects range from a Windows Privilege Escalation Toolkit to advanced persistence mechanisms and command and control servers. I enjoy creating tools that push the boundaries of what's possible and help make systems more secure.</p>
-        <p>In my free time, I love experimenting with new technologies, contributing to open-source projects, and continually learning about the ever-evolving field of cybersecurity. Feel free to explore my GitHub profile to see my work and contributions.</p>
-    </div>
-
-    <audio id="background-music" autoplay loop>
-        <source src="song.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
 </body>
 </html>
