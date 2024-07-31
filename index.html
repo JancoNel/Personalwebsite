@@ -111,7 +111,7 @@
         <h2>Snake go brrrrrr</h2>
         <a href="#"><img src="contributions.svg" alt="Snake animation"></a>
 
-        <audio id="background-music" controls autoplay loop>
+        <audio id="background-music" autoplay loop>
             <source src="song.mp3" type="audio/mpeg">
             Your browser does not support the audio element.
         </audio>
@@ -126,5 +126,14 @@
             <p>&copy; 2024 Janco Nel. Licensed under the MIT License.</p>
         </footer>
     </div>
+
+    <script>
+        window.addEventListener('load', function() {
+            var audio = document.getElementById('background-music');
+            audio.play().catch(error => {
+                console.error('Audio playback failed:', error);
+            });
+        });
+    </script>
 </body>
 </html>
