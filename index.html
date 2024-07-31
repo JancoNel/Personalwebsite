@@ -16,7 +16,7 @@
             margin: 0 auto;
             padding: 20px;
         }
-        .about-me {
+        .about-me, .contact-info {
             background-color: #2e2f3e;
             border-radius: 10px;
             padding: 20px;
@@ -51,11 +51,37 @@
         a:hover {
             text-decoration: underline;
         }
+        nav {
+            background-color: #2e2f3e;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        nav a {
+            margin: 0 15px;
+            color: #8be9fd;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        footer {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #2e2f3e;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
+    <nav>
+        <a href="#about">About Me</a>
+        <a href="#stats">Stats</a>
+        <a href="#contact">Contact</a>
+    </nav>
     <div class="container">
-        <div class="about-me">
+        <div id="about" class="about-me">
             <h2>About Me</h2>
             <div class="github-profile">
                 <a href="https://github.com/JancoNel" target="_blank">
@@ -68,7 +94,7 @@
 
         <h1>One line at a time</h1>
 
-        <div class="stats-container">
+        <div id="stats" class="stats-container">
             <a href="#">
                 <img height="200" src="https://my-stats-43gk.vercel.app/api?username=JancoNel&show_icons=true&theme=radical&hide=contribs,issues&show=discussions_answered&rank_icon=github&include_all_commits=true&card_width=150" alt="GitHub Stats" />
             </a>
@@ -89,6 +115,16 @@
             <source src="song.mp3" type="audio/mpeg">
             Your browser does not support the audio element.
         </audio>
+
+        <div id="contact" class="contact-info">
+            <h2>Contact</h2>
+            <p>Email: <a href="mailto:Aquaperseus@proton.me">Aquaperseus@proton.me</a></p>
+            <p>WhatsApp: <a href="https://wa.me/27605869421">27605869421</a></p>
+        </div>
+
+        <footer>
+            <p>&copy; 2024 Janco Nel. Licensed under the MIT License.</p>
+        </footer>
     </div>
 </body>
 </html>
