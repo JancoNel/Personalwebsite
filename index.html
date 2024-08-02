@@ -5,47 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Janco Nel's Personal Site showcasing projects and contact information.">
     <meta name="keywords" content="Janco Nel, GitHub, Developer, Cybersecurity, Projects">
-    <title>Janco Nel's Personal Site</title>
+    <title>Janco Nel - Personal Website</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #1a1b27;
-            color: #f8f8f2;
             margin: 0;
             padding: 0;
+            background-color: #1a1b27;
+            color: #f8f8f2;
+            text-align: center;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 20px;
         }
-        .about-me, .contact-info {
+        .section {
             background-color: #2e2f3e;
-            border-radius: 10px;
+            border-radius: 8px;
             padding: 20px;
             margin-bottom: 20px;
         }
         .github-profile {
             display: flex;
             align-items: center;
+            justify-content: center;
             margin-bottom: 20px;
+            flex-direction: column;
         }
         .github-profile img {
             border-radius: 50%;
-            margin-right: 20px;
+            margin-bottom: 10px;
         }
         .stats-container {
             display: flex;
             justify-content: center;
-            align-items: center;
             flex-wrap: wrap;
+            gap: 10px;
             margin: 20px 0;
         }
         .stats-container img {
-            margin: 10px;
+            max-width: 100%;
+            height: auto;
         }
-        h2 {
+        h1, h2 {
             color: #ff79c6;
         }
         a {
@@ -58,11 +61,11 @@
         nav {
             background-color: #2e2f3e;
             padding: 10px;
-            border-radius: 10px;
+            border-radius: 8px;
             margin-bottom: 20px;
         }
         nav a {
-            margin: 0 15px;
+            margin: 0 10px;
             color: #8be9fd;
             text-decoration: none;
             font-weight: bold;
@@ -71,10 +74,10 @@
             text-decoration: underline;
         }
         footer {
-            margin-top: 20px;
-            padding: 10px;
             background-color: #2e2f3e;
-            border-radius: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 20px;
         }
         .landing-page {
             display: flex;
@@ -82,104 +85,72 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
+            background-color: #1a1b27;
         }
         .landing-page button {
-            padding: 10px 20px;
+            padding: 15px 30px;
             background-color: #8be9fd;
             color: #1a1b27;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
         }
         .landing-page button:hover {
             background-color: #70d6f2;
-        }
-        /* Media Queries for Mobile View */
-        @media (max-width: 768px) {
-            .github-profile {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .github-profile img {
-                margin: 0 0 10px 0;
-            }
-
-            nav a {
-                display: block;
-                margin: 10px 0;
-            }
-
-            .stats-container {
-                flex-direction: column;
-            }
-
-            .stats-container img {
-                width: 100%;
-                height: auto;
-            }
-
-            .container {
-                padding: 10px;
-            }
-
-            .about-me, .contact-info {
-                padding: 15px;
-            }
-
-            .landing-page button {
-                width: 80%;
-                max-width: 300px;
-            }
         }
     </style>
 </head>
 <body>
     <div class="landing-page" id="landing-page">
-        <h1>Welcome to Janco Nel's Personal Site</h1>
-        <button onclick="enterSite()">Click to Enter</button>
+        <h1>Welcome to My Personal Website</h1>
+        <button onclick="enterSite()">Enter</button>
     </div>
     <div class="container" id="main-content" style="display: none;">
         <nav>
-            <a href="#about" aria-label="About Me Section">About Me</a>
-            <a href="#stats" aria-label="Stats Section">Stats</a>
-            <a href="#contact" aria-label="Contact Section">Contact</a>
+            <a href="#about">About</a>
+            <a href="#stats">Stats</a>
+            <a href="#contact">Contact</a>
         </nav>
-        <div id="about" class="about-me">
+        <div id="about" class="section">
             <h2>About Me</h2>
             <div class="github-profile">
                 <a href="https://github.com/JancoNel" target="_blank">
-                    <img src="https://avatars.githubusercontent.com/u/99132925?v=4" alt="Janco Nel's Profile Picture" width="100" height="100">
+                    <img src="https://avatars.githubusercontent.com/u/99132925?v=4" alt="Janco Nel's Profile Picture" width="120" height="120">
                 </a>
-                <p>Hi, I'm <a href="https://github.com/JancoNel" target="_blank">Janco Nel</a>, a passionate developer that makes malware and hacking related things. I also like making WhatsApp and Discord bots!</p>
+                <p>Hello! I'm <a href="https://github.com/JancoNel" target="_blank">Janco Nel</a>, a developer specializing in cybersecurity, malware analysis, and bot development. I enjoy exploring new technologies and contributing to open-source projects.</p>
             </div>
-            <p>In my free time, I love experimenting with new technologies, contributing to open-source projects, and continually learning about the ever-evolving field of cybersecurity. Feel free to explore my GitHub profile to see my work and contributions.</p>
+            <p>When I'm not coding, I’m learning about the latest trends in cybersecurity and working on personal projects. Feel free to check out my GitHub profile to see my work.</p>
         </div>
 
-        <div id="stats" class="stats-container">
-            <a href="#">
-                <img height="200" src="https://my-stats-43gk.vercel.app/api?username=JancoNel&show_icons=true&theme=radical&hide=contribs,issues&show=discussions_answered&rank_icon=github&include_all_commits=true&card_width=150" alt="GitHub Stats" />
-            </a>
-            <a href="#">
-                <img height="200" src="https://my-stats-43gk.vercel.app/api/top-langs/?username=JancoNel&hide=html,scss,css&langs_count=8&layout=compact&theme=radical&card_width=150" alt="Top Languages" />
-            </a>
+        <div id="stats" class="section">
+            <h2>GitHub Stats</h2>
+            <div class="stats-container">
+                <a href="#">
+                    <img src="https://my-stats-43gk.vercel.app/api?username=JancoNel&show_icons=true&theme=radical&hide=contribs,issues&show=discussions_answered&rank_icon=github&include_all_commits=true&card_width=150" alt="GitHub Stats" />
+                </a>
+                <a href="#">
+                    <img src="https://my-stats-43gk.vercel.app/api/top-langs/?username=JancoNel&hide=html,scss,css&langs_count=8&layout=compact&theme=radical&card_width=150" alt="Top Languages" />
+                </a>
+            </div>
+
+            <div class="stats-container">
+                <img src="https://github-readme-streak-stats-git-main-davids-projects-ad77adcc.vercel.app/?user=JancoNel&theme=radical" alt="Streak Stats" />
+                <img src="https://github-profile-trophy.vercel.app/?username=JancoNel&theme=radical&no-frame=true&title=Stars,Followers,Commits&column=-1" alt="GitHub Trophies" />
+            </div>
         </div>
 
-        <div class="stats-container">
-            <img height="202" src="https://github-readme-streak-stats-git-main-davids-projects-ad77adcc.vercel.app/?user=JancoNel&theme=radical" alt="Streak Stats" />
-            <img height="97" src="https://github-profile-trophy.vercel.app/?username=JancoNel&theme=radical&no-frame=true&title=Stars,Followers,Commits&column=-1" alt="GitHub Trophies" />
+        <div class="section">
+            <h2>Contributions</h2>
+            <a href="#"><img src="contributions.svg" alt="Contribution Snake Animation"></a>
         </div>
-
-        <h2>Snake go brrrrrr</h2>
-        <a href="#"><img src="contributions.svg" alt="Snake animation"></a>
 
         <audio id="background-music" autoplay loop>
             <source src="song.mp3" type="audio/mpeg">
             Your browser does not support the audio element.
         </audio>
 
-        <div id="contact" class="contact-info">
+        <div id="contact" class="section">
             <h2>Contact</h2>
             <p>Email: <a href="mailto:Aquaperseus@proton.me">Aquaperseus@proton.me</a></p>
             <p>WhatsApp: <a href="https://wa.me/27605869421">27605869421</a></p>
