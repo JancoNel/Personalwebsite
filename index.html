@@ -12,6 +12,8 @@
             text-align: center;
             background-color: #1a1b27;
             color: #f8f8f2;
+            margin: 0;
+            padding: 0;
         }
         .container {
             max-width: 800px;
@@ -92,6 +94,44 @@
         }
         .landing-page button:hover {
             background-color: #70d6f2;
+        }
+        /* Media Queries for Mobile View */
+        @media (max-width: 768px) {
+            .github-profile {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .github-profile img {
+                margin: 0 0 10px 0;
+            }
+
+            nav a {
+                display: block;
+                margin: 10px 0;
+            }
+
+            .stats-container {
+                flex-direction: column;
+            }
+
+            .stats-container img {
+                width: 100%;
+                height: auto;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            .about-me, .contact-info {
+                padding: 15px;
+            }
+
+            .landing-page button {
+                width: 80%;
+                max-width: 300px;
+            }
         }
     </style>
 </head>
