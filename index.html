@@ -72,15 +72,38 @@
             background-color: #2e2f3e;
             border-radius: 10px;
         }
+        .landing-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .landing-page button {
+            padding: 10px 20px;
+            background-color: #8be9fd;
+            color: #1a1b27;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .landing-page button:hover {
+            background-color: #70d6f2;
+        }
     </style>
 </head>
 <body>
-    <nav>
-        <a href="#about">About Me</a>
-        <a href="#stats">Stats</a>
-        <a href="#contact">Contact</a>
-    </nav>
-    <div class="container">
+    <div class="landing-page" id="landing-page">
+        <h1>Welcome to Janco Nel's Personal Site</h1>
+        <button onclick="enterSite()">Click to Enter</button>
+    </div>
+    <div class="container" id="main-content" style="display: none;">
+        <nav>
+            <a href="#about">About Me</a>
+            <a href="#stats">Stats</a>
+            <a href="#contact">Contact</a>
+        </nav>
         <div id="about" class="about-me">
             <h2>About Me</h2>
             <div class="github-profile">
@@ -128,12 +151,14 @@
     </div>
 
     <script>
-        window.addEventListener('load', function() {
+        function enterSite() {
+            document.getElementById('landing-page').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
             var audio = document.getElementById('background-music');
             audio.play().catch(error => {
                 console.error('Audio playback failed:', error);
             });
-        });
+        }
     </script>
 </body>
 </html>
