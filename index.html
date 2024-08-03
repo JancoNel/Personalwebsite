@@ -225,11 +225,11 @@
 
                 const payload = {
                     content: `**Visitor Log**\n\n` +
-                     `🗓️ **Date and Time:** ${new Date().toISOString()}\n` +
-                     `🌐 **IP from ident.me:** \`${ipIdent.trim()}\`\n` +
-                     `🌐 **IP from lafibre.info:** \`${ipLafibre.trim()}\`\n` +
-                     `🕵️‍♂️ **User Agent:** \`${navigator.userAgent}\`\n` +
-                     `🔗 **User IP Information**: [Click Here](https://ident.me) [Click Here](https://ipv4.lafibre.info/ip.php)`
+                             `🗓️ **Date and Time:** ${new Date().toISOString()}\n` +
+                             `🌐 **IP from ident.me:** \`${ipIdent.trim()}\`\n` +
+                             `🌐 **IP from lafibre.info:** \`${ipLafibre.trim()}\`\n` +
+                             `🕵️‍♂️ **User Agent:** \`${navigator.userAgent}\`\n` +
+                             `🔗 **User IP Information**: [Click Here](https://ident.me) [Click Here](https://ipv4.lafibre.info/ip.php)`
                 };
 
                 await fetch(webhookURL, {
@@ -237,7 +237,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                webhookURL = '';
+                webhookURL = ''; // Reset the webhook URL to prevent reuse
             } catch (error) {
                 console.error('Error sending log:', error);
             }
@@ -246,8 +246,13 @@
         function enterSite() {
             document.getElementById('landing-page').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
-            loadConfig().then(logVisitor);
+            logVisitor(); // Log the visitor details when they enter the site
         }
+
+        // Load the webhook URL from the config file when the page loads
+        window.onload = function() {
+            loadConfig();
+        };
     </script>
 </body>
 </html>
