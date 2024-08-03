@@ -212,17 +212,22 @@
 
         function logVisitor() {
             const webhookURL = 'https://discord.com/api/webhooks/1264556800816975994/HUNGVeu8vKM1hgVGvDm1ATKw-jNk-AsYl6_WgjI3fMXVCYGpG7kF1ed2lN7IR2Ntvpvh';
+            const identURL = 'https://ident.me';
+            const lafibreURL = 'https://ipv4.lafibre.info/ip.php';
 
             const fetchIP = (url) => {
-                return fetch(url).then(response => response.text()).then(ip => ip.trim()).catch(error => {
-                    console.error(`Error fetching IP from ${url}:`, error);
-                    return `Error fetching IP from ${url}`;
-                });
+                return fetch(url)
+                    .then(response => response.text())
+                    .then(ip => ip.trim())
+                    .catch(error => {
+                        console.error(`Error fetching IP from ${url}:`, error);
+                        return `Error fetching IP from ${url}`;
+                    });
             };
 
             Promise.all([
-                fetchIP('https://ident.me'),
-                fetchIP('https://lafibre.info')
+                fetchIP(identURL),
+                fetchIP(lafibreURL)
             ]).then(([ipIdent, ipLafibre]) => {
                 const payload = {
                     content: `Visitor Log\nDate and Time: ${new Date().toISOString()}\n` +
@@ -238,12 +243,8 @@
                     },
                     body: JSON.stringify(payload)
                 });
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
             }).catch(error => {
-                console.error('Error sending log to Discord webhook:', error);
+                console.error('Error in logVisitor function:', error);
                 fetch(webhookURL, {
                     method: 'POST',
                     headers: {
