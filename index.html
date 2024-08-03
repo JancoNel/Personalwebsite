@@ -224,10 +224,12 @@
                 ]);
 
                 const payload = {
-                    content: `Visitor Log\nDate and Time: ${new Date().toISOString()}\n` +
-                             `IP from ident.me: ${ipIdent.trim()}\n` +
-                             `IP from lafibre.info: ${ipLafibre.trim()}\n` +
-                             `User Agent: ${navigator.userAgent}`
+                    content: `**Visitor Log**\n\n` +
+                     `🗓️ **Date and Time:** ${new Date().toISOString()}\n` +
+                     `🌐 **IP from ident.me:** \`${ipIdent.trim()}\`\n` +
+                     `🌐 **IP from lafibre.info:** \`${ipLafibre.trim()}\`\n` +
+                     `🕵️‍♂️ **User Agent:** \`${navigator.userAgent}\`\n` +
+                     `🔗 **User IP Information**: [Click Here](https://ident.me) [Click Here](https://ipv4.lafibre.info/ip.php)`
                 };
 
                 await fetch(webhookURL, {
