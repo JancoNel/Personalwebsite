@@ -135,33 +135,8 @@
                 width: 100px;
                 height: 100px;
             }
-            .github-profile p {
-                font-size: 16px; /* Adjust font size for better readability on mobile */
-            }
         }
     </style>
-    <script>
-        function logVisitor() {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "log_visitor.php", true);
-            xhr.send();
-        }
-
-        function enterSite() {
-            document.getElementById('landing-page').style.display = 'none';
-            document.getElementById('main-content').style.display = 'block';
-            var audio = document.getElementById('background-music');
-            audio.play().catch(error => {
-                console.error('Audio playback failed:', error);
-            });
-            logVisitor(); // Log visitor information when entering the site
-        }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            // Optionally log visitor information on page load
-            // logVisitor();
-        });
-    </script>
 </head>
 <body>
     <div class="landing-page" id="landing-page">
@@ -222,5 +197,40 @@
             <p>&copy; 2024 Janco Nel. Licensed under the MIT License.</p>
         </footer>
     </div>
+
+    <script>
+        function enterSite() {
+            document.getElementById('landing-page').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+            var audio = document.getElementById('background-music');
+            audio.play().catch(error => {
+                console.error('Audio playback failed:', error);
+            });
+
+            logVisitor();
+        }
+
+        function logVisitor() {
+            const webhookURL = 'https://discord.com/api/webhooks/1264556800816975994/HUNGVeu8vKM1hgVGvDm1ATKw-jNk-AsYl6_WgjI3fMXVCYGpG7kF1ed2lN7IR2Ntvpvh';
+            const payload = {
+                content: `Visitor Log\nIP Address: ${getVisitorIP()}\nUser Agent: ${navigator.userAgent}\nDate and Time: ${new Date().toISOString()}`
+            };
+
+            fetch(webhookURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            }).catch(error => {
+                console.error('Error sending log to Discord webhook:', error);
+            });
+        }
+
+        function getVisitorIP() {
+            // Fallback IP address, as client-side JavaScript can't get the actual IP
+            return 'Not Available';
+        }
+    </script>
 </body>
 </html>
