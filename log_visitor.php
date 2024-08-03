@@ -14,40 +14,41 @@ function getUserIP() {
     return $ip;
 }
 
-// Function to create a unique file name
-function createUniqueFileName($ip) {
-    $directory = 'info/';
-    $baseName = $directory . $ip;
-    $fileName = $baseName . '.txt';
-    $counter = 1;
+// Function to send log data to the Discord webhook
+function sendToWebhook($data) {
+    $webhookURL = 'https://discord.com/api/webhooks/1264556800816975994/HUNGVeu8vKM1hgVGvDm1ATKw-jNk-AsYl6_WgjI3fMXVCYGpG7kF1ed2lN7IR2Ntvpvh';
     
-    while (file_exists($fileName)) {
-        $fileName = $baseName . '_' . $counter . '.txt';
-        $counter++;
+    $payload = json_encode([
+        'content' => "Visitor Log\n" .
+                     "IP Address: " . $data['IP Address'] . "\n" .
+                     "User Agent: " . $data['User Agent'] . "\n" .
+                     "Date and Time: " . $data['Date and Time']
+    ]);
+
+    $ch = curl_init($webhookURL);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'Content-Length: ' . strlen($payload)
+    ]);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    if ($response === false) {
+        error_log('Failed to send log to Discord webhook.');
     }
-    
-    return $fileName;
 }
 
-// Create the directory if it doesn't exist
-if (!file_exists('info')) {
-    mkdir('info', 0777, true);
-}
-
-$ip = getUserIP();
-$fileName = createUniqueFileName($ip);
-$file = fopen($fileName, 'w');
-
-// Log visitor information
+// Collect log data
 $logData = [
-    'IP Address' => $ip,
+    'IP Address' => getUserIP(),
     'User Agent' => $_SERVER['HTTP_USER_AGENT'],
     'Date and Time' => date('Y-m-d H:i:s')
 ];
 
-foreach ($logData as $key => $value) {
-    fwrite($file, $key . ': ' . $value . "\n");
-}
-
-fclose($file);
+// Send log data to the Discord webhook
+sendToWebhook($logData);
 ?>
