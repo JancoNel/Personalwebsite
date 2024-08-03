@@ -199,64 +199,51 @@
     </div>
 
     <script>
-        function enterSite() {
-            document.getElementById('landing-page').style.display = 'none';
-            document.getElementById('main-content').style.display = 'block';
-            var audio = document.getElementById('background-music');
-            audio.play().catch(error => {
-                console.error('Audio playback failed:', error);
-            });
+        let webhookURL = '';
 
-            logVisitor();
+        async function loadConfig() {
+            try {
+                const response = await fetch('config.txt');
+                const text = await response.text();
+                webhookURL = text.trim();
+            } catch (error) {
+                console.error('Error loading config file:', error);
+            }
         }
 
-        function logVisitor() {
-            const webhookURL = 'https://discord.com/api/webhooks/1264556800816975994/HUNGVeu8vKM1hgVGvDm1ATKw-jNk-AsYl6_WgjI3fMXVCYGpG7kF1ed2lN7IR2Ntvpvh';
-            const identURL = 'https://ident.me';
-            const lafibreURL = 'https://ipv4.lafibre.info/ip.php';
+        async function logVisitor() {
+            if (!webhookURL) {
+                console.error('Webhook URL not set.');
+                return;
+            }
 
-            const fetchIP = (url) => {
-                return fetch(url)
-                    .then(response => response.text())
-                    .then(ip => ip.trim())
-                    .catch(error => {
-                        console.error(`Error fetching IP from ${url}:`, error);
-                        return `Error fetching IP from ${url}`;
-                    });
-            };
+            try {
+                const [ipIdent, ipLafibre] = await Promise.all([
+                    fetch('https://ident.me').then(res => res.text()),
+                    fetch('https://ipv4.lafibre.info/ip.php').then(res => res.text())
+                ]);
 
-            Promise.all([
-                fetchIP(identURL),
-                fetchIP(lafibreURL)
-            ]).then(([ipIdent, ipLafibre]) => {
                 const payload = {
                     content: `Visitor Log\nDate and Time: ${new Date().toISOString()}\n` +
-                             `IP from ident.me: ${ipIdent}\n` +
-                             `IP from lafibre.info: ${ipLafibre}\n` +
+                             `IP from ident.me: ${ipIdent.trim()}\n` +
+                             `IP from lafibre.info: ${ipLafibre.trim()}\n` +
                              `User Agent: ${navigator.userAgent}`
                 };
 
-                return fetch(webhookURL, {
+                await fetch(webhookURL, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-            }).catch(error => {
-                console.error('Error in logVisitor function:', error);
-                fetch(webhookURL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        content: `Error sending visitor log:\n${error.message}`
-                    })
-                }).catch(error => {
-                    console.error('Error sending error log to Discord webhook:', error);
-                });
-            });
+            } catch (error) {
+                console.error('Error sending log:', error);
+            }
+        }
+
+        function enterSite() {
+            document.getElementById('landing-page').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+            loadConfig().then(logVisitor);
         }
     </script>
 </body>
