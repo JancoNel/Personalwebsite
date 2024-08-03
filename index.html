@@ -235,6 +235,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
+                webhookURL = '';
             } catch (error) {
                 console.error('Error sending log:', error);
             }
