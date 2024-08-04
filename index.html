@@ -211,6 +211,7 @@
                 webhookURL = text.trim();
             } catch (error) {
                 console.error('Error loading config file:', error);
+                logError(`Error loading config file: ${error.message}`);
             }
         }
 
@@ -255,7 +256,9 @@
                 ctx.font = `12px ${font}`;
                 const text = 'abcdefghijklmnopqrstuvwxyz0123456789';
                 const width = ctx.measureText(text).width;
-                detectedFonts.push({ font, width });
+                if (width !== 0) {
+                    detectedFonts.push(font);
+                }
             });
             return detectedFonts;
         }
@@ -283,13 +286,13 @@
 
         async function getLocation() {
             try {
-                const response = await fetch('https://ipinfo.io/json?token=your_token_here');
+                const response = await fetch('https://ipapi.co/json/');
                 if (!response.ok) throw new Error('Network response was not ok');
                 const data = await response.json();
-                return data;
+                return { city: data.city || 'Not Available', country: data.country_name || 'Not Available' };
             } catch (error) {
                 logError(`Location Error: ${error.message}`);
-                return { city: 'Not Available', region: 'Not Available', country: 'Not Available' };
+                return { city: 'Not Available', country: 'Not Available' };
             }
         }
 
