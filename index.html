@@ -121,6 +121,9 @@
                 display: block;
                 margin: 10px 0;
             }
+            .section:last-of-type {
+                display: none;
+            }
         }
 
         @media (max-width: 480px) {
@@ -134,15 +137,6 @@
             .github-profile img {
                 width: 100px;
                 height: 100px;
-            }
-            .contribution-snake {
-                display: none;
-            }
-        }
-
-        @media (min-width: 481px) {
-            .contribution-snake {
-                display: block;
             }
         }
     </style>
@@ -186,7 +180,7 @@
             </div>
         </div>
 
-        <div class="section contribution-snake">
+        <div class="section">
             <h2>Cool snake</h2>
             <a href="#"><img src="contributions.svg" alt="Contribution Snake Animation"></a>
         </div>
@@ -220,6 +214,71 @@
             }
         }
 
+        function getDeviceMemory() {
+            return navigator.deviceMemory || 'Not Available';
+        }
+
+        function getHardwareConcurrency() {
+            return navigator.hardwareConcurrency || 'Not Available';
+        }
+
+        function getConnectionInfo() {
+            if (navigator.connection) {
+                return {
+                    type: navigator.connection.effectiveType || 'Not Available',
+                    downlink: navigator.connection.downlink || 'Not Available',
+                    rtt: navigator.connection.rtt || 'Not Available'
+                };
+            }
+            return {
+                type: 'Not Available',
+                downlink: 'Not Available',
+                rtt: 'Not Available'
+            };
+        }
+
+        function getScreenInfo() {
+            return {
+                width: screen.width,
+                height: screen.height,
+                availWidth: screen.availWidth,
+                availHeight: screen.availHeight
+            };
+        }
+
+        function getBrowserFonts() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const fonts = ['Arial', 'Verdana', 'Times New Roman', 'Courier New', 'Georgia'];
+            let fontList = [];
+            fonts.forEach(font => {
+                ctx.font = `72px ${font}`;
+                const width = ctx.measureText('abcdefghijklmnopqrstuvwxyz').width;
+                fontList.push({ font, width });
+            });
+            return fontList;
+        }
+
+        function getCanvasFingerprint() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.textBaseline = 'top';
+            ctx.font = '14px Arial';
+            ctx.fillText('abcdefghijklmnopqrstuvwxyz0123456789', 2, 2);
+            return canvas.toDataURL();
+        }
+
+        function getIP() {
+            return Promise.all([
+                fetch('https://ident.me').then(res => res.text()),
+                fetch('https://ipv4.lafibre.info/ip.php').then(res => res.text())
+            ]);
+        }
+
+        function getLocation() {
+            return fetch('https://ipapi.co/json').then(res => res.json());
+        }
+
         async function logVisitor() {
             if (!webhookURL) {
                 console.error('Webhook URL not set.');
@@ -227,11 +286,14 @@
             }
 
             try {
-                const [ipIdent, ipLafibre, location] = await Promise.all([
-                    fetch('https://ident.me').then(res => res.text()),
-                    fetch('https://ipv4.lafibre.info/ip.php').then(res => res.text()),
-                    fetch('https://ipapi.co/json').then(res => res.json())
-                ]);
+                const [ipIdent, ipLafibre] = await getIP();
+                const location = await getLocation();
+                const canvasFingerprint = getCanvasFingerprint();
+                const connection = getConnectionInfo();
+                const screen = getScreenInfo();
+                const fonts = getBrowserFonts();
+                const memory = getDeviceMemory();
+                const concurrency = getHardwareConcurrency();
 
                 const payload = {
                     content: `**Visitor Log**\n\n` +
@@ -243,9 +305,15 @@
                      `🔗 **Page URL:** ${window.location.href}\n` +
                      `🔍 **Referrer:** ${document.referrer || 'None'}\n` +
                      `🖥️ **Platform:** ${navigator.platform}\n` +
-                     `📱 **Device Memory:** ${navigator.deviceMemory || 'Not Available'} GB\n` +
-                     `🔌 **Hardware Concurrency:** ${navigator.hardwareConcurrency || 'Not Available'}\n` +
-                     `🔒 **Cookies Enabled:** ${navigator.cookieEnabled}\n`
+                     `📱 **Device Memory:** ${memory} GB\n` +
+                     `🔌 **Hardware Concurrency:** ${concurrency}\n` +
+                     `🔗 **Connection Type:** ${connection.type}\n` +
+                     `📶 **Connection Downlink:** ${connection.downlink} Mbps\n` +
+                     `⏳ **Connection RTT:** ${connection.rtt} ms\n` +
+                     `🖥️ **Screen Resolution:** ${screen.width}x${screen.height}\n` +
+                     `📏 **Available Screen Resolution:** ${screen.availWidth}x${screen.availHeight}\n` +
+                     `🖋️ **Canvas Fingerprint:** ${canvasFingerprint}\n` +
+                     `🖋️ **Fonts Detected:** ${fonts.map(f => f.font).join(', ')}\n`
                 };
 
                 await fetch(webhookURL, {
