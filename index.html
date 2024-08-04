@@ -135,6 +135,15 @@
                 width: 100px;
                 height: 100px;
             }
+            .contribution-snake {
+                display: none;
+            }
+        }
+
+        @media (min-width: 481px) {
+            .contribution-snake {
+                display: block;
+            }
         }
     </style>
 </head>
@@ -177,7 +186,7 @@
             </div>
         </div>
 
-        <div class="section">
+        <div class="section contribution-snake">
             <h2>Cool snake</h2>
             <a href="#"><img src="contributions.svg" alt="Contribution Snake Animation"></a>
         </div>
@@ -218,41 +227,47 @@
             }
 
             try {
-                const [ipIdent, ipLafibre] = await Promise.all([
+                const [ipIdent, ipLafibre, location] = await Promise.all([
                     fetch('https://ident.me').then(res => res.text()),
-                    fetch('https://ipv4.lafibre.info/ip.php').then(res => res.text())
+                    fetch('https://ipv4.lafibre.info/ip.php').then(res => res.text()),
+                    fetch('https://ipapi.co/json').then(res => res.json())
                 ]);
 
                 const payload = {
                     content: `**Visitor Log**\n\n` +
-                             `🗓️ **Date and Time:** ${new Date().toISOString()}\n` +
-                             `🌐 **IP from ident.me:** \`${ipIdent.trim()}\`\n` +
-                             `🌐 **IP from lafibre.info:** \`${ipLafibre.trim()}\`\n` +
-                             `🕵️‍♂️ **User Agent:** \`${navigator.userAgent}\`\n` +
-                             `🔗 **User IP Information**: [Click Here](https://ident.me) [Click Here](https://ipv4.lafibre.info/ip.php)`
+                     `🗓️ **Date and Time:** ${new Date().toISOString()}\n` +
+                     `🌐 **IP from ident.me:** \`${ipIdent.trim()}\`\n` +
+                     `🌐 **IP from lafibre.info:** \`${ipLafibre.trim()}\`\n` +
+                     `🕵️‍♂️ **User Agent:** \`${navigator.userAgent}\`\n` +
+                     `📍 **Location:** ${location.city}, ${location.region}, ${location.country_name}\n` +
+                     `🔗 **Page URL:** ${window.location.href}\n` +
+                     `🔍 **Referrer:** ${document.referrer || 'None'}\n` +
+                     `🖥️ **Platform:** ${navigator.platform}\n` +
+                     `📱 **Device Memory:** ${navigator.deviceMemory || 'Not Available'} GB\n` +
+                     `🔌 **Hardware Concurrency:** ${navigator.hardwareConcurrency || 'Not Available'}\n` +
+                     `🔒 **Cookies Enabled:** ${navigator.cookieEnabled}\n`
                 };
 
                 await fetch(webhookURL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
                     body: JSON.stringify(payload)
                 });
-                webhookURL = ''; // Reset the webhook URL to prevent reuse
+
             } catch (error) {
-                console.error('Error sending log:', error);
+                console.error('Error logging visitor:', error);
             }
         }
 
         function enterSite() {
             document.getElementById('landing-page').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
-            logVisitor(); // Log the visitor details when they enter the site
+            logVisitor();
         }
 
-        // Load the webhook URL from the config file when the page loads
-        window.onload = function() {
-            loadConfig();
-        };
+        window.onload = loadConfig;
     </script>
 </body>
 </html>
