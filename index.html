@@ -253,9 +253,8 @@
             const fonts = ['Arial', 'Verdana', 'Courier New', 'Georgia', 'Times New Roman'];
             const detectedFonts = [];
             fonts.forEach(font => {
-                ctx.font = `12px ${font}`;
-                const text = 'abcdefghijklmnopqrstuvwxyz0123456789';
-                const width = ctx.measureText(text).width;
+                ctx.font = `16px ${font}`;
+                const width = ctx.measureText('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789').width;
                 if (width !== 0) {
                     detectedFonts.push(font);
                 }
@@ -317,14 +316,59 @@
             const cookiesEnabled = navigator.cookieEnabled;
             const pageURL = window.location.href;
             const referrer = document.referrer || 'None';
-            const deviceMemory = getDeviceMemory();
-            const hardwareConcurrency = getHardwareConcurrency();
-            const connectionInfo = getConnectionInfo();
-            const screenInfo = getScreenInfo();
-            const fonts = getBrowserFonts();
+            let deviceMemory, hardwareConcurrency, connectionInfo, screenInfo, fonts, location, ip1, ip2;
 
-            const location = await getLocation();
-            const { ip1, ip2 } = await getIPs();
+            try {
+                deviceMemory = getDeviceMemory();
+            } catch (error) {
+                logError(`Device Memory Error: ${error.message}`);
+                deviceMemory = 'Not Available';
+            }
+
+            try {
+                hardwareConcurrency = getHardwareConcurrency();
+            } catch (error) {
+                logError(`Hardware Concurrency Error: ${error.message}`);
+                hardwareConcurrency = 'Not Available';
+            }
+
+            try {
+                connectionInfo = getConnectionInfo();
+            } catch (error) {
+                logError(`Connection Info Error: ${error.message}`);
+                connectionInfo = { type: 'Not Available', downlink: 'Not Available', rtt: 'Not Available' };
+            }
+
+            try {
+                screenInfo = getScreenInfo();
+            } catch (error) {
+                logError(`Screen Info Error: ${error.message}`);
+                screenInfo = { width: 'Not Available', height: 'Not Available', availWidth: 'Not Available', availHeight: 'Not Available' };
+            }
+
+            try {
+                fonts = getBrowserFonts();
+            } catch (error) {
+                logError(`Fonts Error: ${error.message}`);
+                fonts = [];
+            }
+
+            try {
+                location = await getLocation();
+            } catch (error) {
+                logError(`Location Error: ${error.message}`);
+                location = { city: 'Not Available', country: 'Not Available' };
+            }
+
+            try {
+                const ips = await getIPs();
+                ip1 = ips.ip1;
+                ip2 = ips.ip2;
+            } catch (error) {
+                logError(`IP Error: ${error.message}`);
+                ip1 = 'Not Available';
+                ip2 = 'Not Available';
+            }
 
             const visitorLog = {
                 dateTime: new Date().toISOString(),
