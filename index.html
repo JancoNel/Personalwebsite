@@ -279,7 +279,6 @@
                         content: `\`\`\`json\n${JSON.stringify(errorLog, null, 2)}\n\`\`\``
                     })
                 }).catch(err => console.error('Failed to send error log:', err));
-                webhookURL = '';  // Clear the webhook URL after sending the error log
             }
         }
 
