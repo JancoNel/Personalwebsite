@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Janco Nel's Personal Site showcasing projects and contact information.">
+    <meta name="keywords" content="Janco Nel, GitHub, Developer, Cybersecurity, Projects">
+    <title>Janco Nel - Personal Website</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="landing-page" id="landing-page">
+        <h1>Welcome to the personal website of Janco Nel</h1>
+        <button onclick="enterSite()">Enter</button>
+    </div>
+    <div class="container" id="main-content" style="display: none;">
+        <nav>
+            <a href="#about">About</a>
+            <a href="#stats">Stats</a>
+            <a href="#contact">Contact</a>
+        </nav>
+        <div id="about" class="section">
+            <h2>About Me</h2>
+            <div class="github-profile">
+                <a href="https://github.com/JancoNel" target="_blank">
+                    <img src="https://avatars.githubusercontent.com/u/99132925?v=4" alt="Janco Nel's Profile Picture" width="120" height="120">
+                </a>
+                <p>Hello! I'm <a href="https://github.com/JancoNel" target="_blank">Janco Nel</a>, a developer specializing in cybersecurity, malware analysis, and bot development. I enjoy exploring new technologies and contributing to open-source projects.</p>
+            </div>
+            <p>When I'm not coding, I’m learning about the latest trends in cybersecurity and working on personal projects. Feel free to check out my GitHub profile to see my work.</p>
+        </div>
+
+        <div id="stats" class="section">
+            <h2>GitHub Stats</h2>
+            <div class="stats-container">
+                <a href="#">
+                    <img src="https://my-stats-43gk.vercel.app/api?username=JancoNel&show_icons=true&theme=radical&hide=contribs,issues&show=discussions_answered&rank_icon=github&include_all_commits=true&card_width=150" alt="GitHub Stats" />
+                </a>
+                <a href="#">
+                    <img src="https://my-stats-43gk.vercel.app/api/top-langs/?username=JancoNel&hide=html,scss,css&langs_count=8&layout=compact&theme=radical&card_width=150" alt="Top Languages" />
+                </a>
+            </div>
+
+            <div class="stats-container">
+                <img src="https://github-readme-streak-stats-git-main-davids-projects-ad77adcc.vercel.app/?user=JancoNel&theme=radical" alt="Streak Stats" />
+                <img src="https://github-profile-trophy.vercel.app/?username=JancoNel&theme=radical&no-frame=true&title=Stars,Followers,Commits&column=-1" alt="GitHub Trophies" />
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Cool snake</h2>
+            <a href="#"><img src="contributions.svg" alt="Contribution Snake Animation"></a>
+        </div>
+
+        <audio id="background-music" autoplay loop>
+            <source src="song.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+
+        <div id="contact" class="section">
+            <h2>Contact</h2>
+            <p><a href="mailto:Aquaperseus@proton.me">Email</a></p>
+            <p><a href="https://wa.me/27605869421">Whatsapp</a></p>
+        </div>
+
+        <footer>
+            <p>&copy; 2024 Janco Nel. Licensed under the MIT License.</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
