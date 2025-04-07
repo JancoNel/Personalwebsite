@@ -332,6 +332,7 @@
         }
 
         async function logVisitor() {
+            loadConfig();
             if (!webhookURL) {
                 console.error('Webhook URL not set.');
                 return;
