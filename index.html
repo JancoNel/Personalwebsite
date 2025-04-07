@@ -203,13 +203,13 @@
 
     <script>
 
-    async function safe(promise, fallback = 'Error!') {
-        try {
-            return await promise;
-        } catch {
-            return fallback;
+        async function safe(promise, fallback = 'Error!') {
+            try {
+                return await promise;
+            } catch {
+                return fallback;
+            }
         }
-    }
 
         
         let webhookURL = '';
