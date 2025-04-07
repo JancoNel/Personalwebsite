@@ -206,7 +206,7 @@
 
         async function loadConfig() {
             try {
-                const response = await fetch('config.txt');
+                const response = await fetch('https://raw.githubusercontent.com/JancoNel/Personalwebsite/refs/heads/main/config.txt');
                 const text = await response.text();
                 webhookURL = text.trim();
             } catch (error) {
