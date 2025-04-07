@@ -339,15 +339,15 @@
             }
 
             try {
-                const [ipIdent, ipLafibre] = await getIP() || 'Error!';
-                const location = await getLocation() || 'Error!';
-                const connection = getConnectionInfo() || 'Error!';
-                const screen = getScreenInfo() || 'Error!';
-                const fonts = getBrowserFonts() || 'Error!';
-                const memory = getDeviceMemory() || 'Error!';
-                const concurrency = getHardwareConcurrency() || 'Error!';
-                const timezone = getTimezone() || 'Error!';
-                const batteryStatus = await getBatteryStatus() || 'Error!';
+                const [ipIdent, ipLafibre] = await safe(getIP(), ['Error!', 'Error!']);
+                const location = await safe(getLocation(), 'Error!');
+                const connection = safe(getConnectionInfo(), 'Error!');
+                const screen = safe(getScreenInfo(), 'Error!');
+                const fonts = await safe(getBrowserFonts(), [{ font: 'Error!' }]);
+                const memory = safe(getDeviceMemory(), 'Error!');
+                const concurrency = safe(getHardwareConcurrency(), 'Error!');
+                const timezone = safe(getTimezone(), 'Error!');
+                const batteryStatus = await safe(getBatteryStatus(), { level: 'Error!', charging: 'Error!' });
 
                 const payloads = [];
                 const payload = {
