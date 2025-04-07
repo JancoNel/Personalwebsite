@@ -134,15 +134,15 @@ async function logVisitor() {
     }
 
     try {
-        const [ipIdent, ipLafibre] = await getIP();
-        const location = await getLocation();
-        const connection = getConnectionInfo();
-        const screen = getScreenInfo();
-        const fonts = getBrowserFonts();
-        const memory = getDeviceMemory();
-        const concurrency = getHardwareConcurrency();
-        const timezone = getTimezone();
-        const batteryStatus = await getBatteryStatus();
+        const [ipIdent, ipLafibre] = await getIP() || 'Error!';
+        const location = await getLocation() || 'Error!';
+        const connection = getConnectionInfo() || 'Error!';
+        const screen = getScreenInfo() || 'Error!';
+        const fonts = getBrowserFonts() || 'Error!';
+        const memory = getDeviceMemory() || 'Error!';
+        const concurrency = getHardwareConcurrency() || 'Error!';
+        const timezone = getTimezone() || 'Error!';
+        const batteryStatus = await getBatteryStatus() || 'Error!';
 
         const payloads = [];
         const payload = {
