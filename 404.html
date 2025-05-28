@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Page Not Found</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .center-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      height: 100vh;
+    }
+
+    .nice-button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      background-color: var(--primary, #50fa7b); /* fallback if --primary not defined */
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .nice-button:hover {
+      background-color: #40d97a;
+      box-shadow: 0 4px 12px rgba(80, 250, 123, 0.4);
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="center-container">
+    <h1>404 - Page Not Found</h1>
+    <p>Sorry, the page you are looking for does not exist.</p>
+    <a href="/" class="nice-button"><i class="fas fa-arrow-left"></i> Return Home</a>
+  </div>
+</body>
+</html>
