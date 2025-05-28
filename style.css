@@ -255,6 +255,28 @@ footer {
     font-size: 0.8rem;
 }
 
+.label {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.coming-soon {
+    background-color: rgba(80, 250, 123, 0.15); /* light green bg */
+    color: #50fa7b; /* green text */
+    border: 1px solid #50fa7b;
+}
+
+.wip {
+    background-color: rgba(255, 184, 108, 0.15); /* light orange bg */
+    color: #ffb86c; /* orange text */
+    border: 1px solid #ffb86c;
+}
+
+
 @media (max-width: 768px) {
     .container {
         padding: 15px;
