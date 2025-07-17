@@ -121,6 +121,11 @@ h2:hover::after {
     font-weight: bold;
 }
 
+.blueter {
+    color: var(--primary);
+    font-weight: bold;
+}
+
 /* For the contribution link inside the td */
 .contribution-link {
     display: inline-flex;
