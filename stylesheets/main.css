@@ -121,6 +121,28 @@ h2:hover::after {
     font-weight: bold;
 }
 
+/* For the contribution link inside the td */
+.contribution-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: inherit;
+    font-weight: 500;
+}
+
+.contribution-link i {
+    font-size: 1rem;
+    color: var(--secondary);
+}
+
+/* Optional hover effect for the link */
+.contribution-link:hover {
+    text-decoration: underline;
+    color: var(--accent, var(--secondary));
+}
+
+
 .github-profile {
     display: flex;
     align-items: center;
