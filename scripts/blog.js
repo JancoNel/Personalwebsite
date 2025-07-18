@@ -31,6 +31,7 @@ function updateTimestamps() {
   dateEls.forEach(el => {
     const date = new Date(el.dataset.date);
     const diff = Math.floor((now - date) / 1000); // in seconds
+    console.log(diff)
 
     let result = '';
     if (diff < 10) {
