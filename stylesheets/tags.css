@@ -1,0 +1,12 @@
+.tag {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 6px;
+    font-size: 0.8em;
+    border-radius: 4px;
+    color: white;
+}
+.tag.update { background-color: #007bff; }
+.tag.intro { background-color: #28a745; }
+.tag.dev { background-color: #6f42c1; }
+.tag.blog { background-color: #e83e8c; }

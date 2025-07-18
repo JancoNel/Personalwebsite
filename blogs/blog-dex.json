@@ -1,4 +1,9 @@
 [
-    { "file": "helloworld.html", "title": "My First Blog", "date": "2025-07-01" }
-]
+    {
+      "title": "Hello World",
+      "file": "helloworld.html",
+      "date": "2025-07-18T03:00:00",
+      "tags": ["update", "intro"]
+    }
+  ]
   
