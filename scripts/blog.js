@@ -32,14 +32,21 @@ function updateTimestamps() {
     const diff = (now - date) / 1000;
 
     let result = '';
-    if (diff < 60) result = `${Math.floor(diff)} sec ago`;
-    else if (diff < 3600) result = `${Math.floor(diff / 60)} min ago`;
-    else if (diff < 86400) result = `${Math.floor(diff / 3600)} hour${Math.floor(diff / 3600) !== 1 ? 's' : ''} ago`;
-    else {
+    if (diff < 60) {
+      const secs = Math.floor(diff);
+      result = `${secs} second${secs !== 1 ? 's' : ''} ago`;
+    } else if (diff < 3600) {
+      const mins = Math.floor(diff / 60);
+      result = `${mins} minute${mins !== 1 ? 's' : ''} ago`;
+    } else if (diff < 86400) {
+      const hrs = Math.floor(diff / 3600);
+      result = `${hrs} hour${hrs !== 1 ? 's' : ''} ago`;
+    } else {
       const options = { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: '2-digit' };
       result = date.toLocaleString(undefined, options);
     }
 
-    el.textContent = ` – ${result}`;
+    el.textContent = ` - ${result}`;
   });
 }
+
