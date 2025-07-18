@@ -2,13 +2,13 @@
   {
     "title": "Hello World",
     "file": "helloworld.html",
-    "date": "2025-07-18T03:00:00",
+    "date": "2025-07-18T15:00:00Z",
     "tags": ["update", "intro"]
   },
   {
     "title": "Lockdown: How I Built My Automated Threat Response Tool",
     "file": "lockdown.html",
-    "date": "2025-07-18T15:00:00",
+    "date": "2025-07-18T15:00:00Z",
     "tags": ["security", "python", "project", "blue-team"]
   }
 ]
