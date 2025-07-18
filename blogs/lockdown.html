@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lockdown - Dev Story</title>
+  <link rel="stylesheet" href="../stylesheets/main.css">
+  <link rel="stylesheet" href="../stylesheets/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+    <a class="back-button" href="/blog.html"><i class="fas fa-arrow-left"></i> Back to Blog Index</a>
+    <h1>Lockdown: How I Built My Automated Threat Response Tool</h1>
+    <div class="date">Posted: 2025-07-18</div>
+
+    <p>While experimenting with Aurora Lite, I discovered it could execute custom actions and scripts when something suspicious was detected. That sparked a creative idea — what if I could make it run <em>any</em> code on detection? Suddenly, I had full control over how a system could respond when it was under threat.</p>
+
+    <p>That led me to build <strong>Lockdown</strong> — a standalone Python-based response tool designed to react immediately and aggressively to signs of compromise. It can run either as a script or a compiled binary and is built for anyone who doesn’t want to rely on full-blown commercial EDR/XDR setups. It works as a plug-and-play defensive measure.</p>
+
+    <p>One of the first features I implemented was forensic collection and instant alerting via Discord webhooks. Discord is a great poor man's info server — it gets the job done when you just need alerts without the overhead of a full logging system. I wanted to be pinged *immediately* if anything went wrong, even if I was hanging out with the boys.</p>
+
+    <p>Funny enough, the idea of cutting the internet connection before doing anything came to me in a dream. I don't remember the details anymore, but I woke up with the concept clearly in mind — isolate first, investigate second. That ended up being one of Lockdown's core behaviors.</p>
+
+    <h2>🔧 How It Works</h2>
+    <p>Here's the sequence Lockdown follows when triggered:</p>
+    <ul>
+      <li>🔒 <strong>Instantly blocks all network connections</strong> to stop data exfiltration and command & control channels.</li>
+      <li>🧹 <strong>Terminates dangerous or suspicious processes</strong></li>
+      <li>📦 <strong>Collects forensic data</strong> about running processes, user info, and host metadata.</li>
+      <li>📡 <strong>Temporarily restores the internet</strong> to send an alert and forensic dump via a Discord webhook.</li>
+      <li>💥 <strong>Immediately shuts down the system</strong> to prevent further exploitation.</li>
+      <li>⚙️ <strong>Designed for integration</strong> with EDR/XDR tools as a post-detection response module.</li>
+    </ul>
+
+    <p>It's quick, brutal, and designed to make sure the attacker can't do anything meaningful once caught.</p>
+
+    <p>Originally, I named the project <strong>Red Alert</strong> to reflect how serious a breach is, but someone suggested <strong>Lockdown</strong> — and that just clicked. It felt tighter and more intentional, so I ran with it.</p>
+
+    <p>If you want to try Lockdown yourself or read through the source code, check it out on GitHub:<br>
+    <a href="https://github.com/JancoNel/Lockdown" target="_blank">https://github.com/JancoNel/Lockdown</a></p>
+
+    <p>Stay safe,<br>Janco</p>
+  </div>
+</body>
+</html>
