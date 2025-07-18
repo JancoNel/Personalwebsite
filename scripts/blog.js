@@ -26,21 +26,26 @@ fetch('blogs/blog-dex.json')
 // Relative time formatter
 function updateTimestamps() {
   const dateEls = document.querySelectorAll('.blog-date');
+  const now = new Date();
+
   dateEls.forEach(el => {
     const date = new Date(el.dataset.date);
-    const now = new Date();
-    const diff = (now - date) / 1000;
+    const diff = Math.floor((now - date) / 1000); // in seconds
 
     let result = '';
-    if (diff < 60) {
-      const secs = Math.floor(diff);
-      result = `${secs} second${secs !== 1 ? 's' : ''} ago`;
+    if (diff < 10) {
+      result = 'just now';
+    } else if (diff < 60) {
+      result = `${diff} seconds ago`;
     } else if (diff < 3600) {
-      const mins = Math.floor(diff / 60);
-      result = `${mins} minute${mins !== 1 ? 's' : ''} ago`;
+      const minutes = Math.floor(diff / 60);
+      result = `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
     } else if (diff < 86400) {
-      const hrs = Math.floor(diff / 3600);
-      result = `${hrs} hour${hrs !== 1 ? 's' : ''} ago`;
+      const hours = Math.floor(diff / 3600);
+      result = `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+    } else if (diff < 604800) {
+      const days = Math.floor(diff / 86400);
+      result = `${days} day${days !== 1 ? 's' : ''} ago`;
     } else {
       const options = { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: '2-digit' };
       result = date.toLocaleString(undefined, options);
@@ -49,4 +54,5 @@ function updateTimestamps() {
     el.textContent = ` - ${result}`;
   });
 }
+
 
