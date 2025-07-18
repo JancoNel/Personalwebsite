@@ -1,32 +1,24 @@
-// Apologies to anyone reading this code , I had to do a shitload of comments so I dont forget
+// Apologies to anyone reading this code , I had to do a shitload of comments so I dont forget (again)
 
 
 // Update the copyright year dynamically 
 document.getElementById('current-year').textContent = new Date().getFullYear();
 
-// Select all <a> tags inside the <nav> element to add smooth scrolling behavior
+// Smooth scrolling for navigation
 document.querySelectorAll('nav a').forEach(anchor => {
-    // Get the href attribute value of the current <a> tag
     const href = anchor.getAttribute('href');
 
-    // Only add smooth scrolling if the href is an internal link starting with '#'
-    // This avoids interfering with links to other pages (e.g., /blog.html)
-    if (href && href.startsWith('#')) {
-        // Add a click event listener to the anchor element
+    // Only apply smooth scroll to internal links (starting with '#')
+    if (href && href.startsWith('#')) { // For like parts of the same page
         anchor.addEventListener('click', function(e) {
-            // Prevent the default jump-to-anchor behavior of the browser
             e.preventDefault();
-
-            // Find the target element in the document that matches the href selector
             const target = document.querySelector(href);
-
-            // If the target element exists, smoothly scroll it into view
             if (target) {
                 target.scrollIntoView({
-                    behavior: 'smooth'  // Defines smooth animation rather than instant jump
+                    behavior: 'smooth'
                 });
             }
-            // If target doesn't exist, do nothing (safe fallback)
         });
     }
+    // All other links (like /blog.html) will now use default behavior
 });
