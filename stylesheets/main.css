@@ -76,6 +76,181 @@ h2:hover::after {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
+.qualifications-heading,
+.certs-dialog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.qualifications-heading h2,
+.certs-dialog-header h2 {
+    margin-top: 0;
+}
+
+.qualifications-button,
+.certs-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 8px 12px;
+    border: 1px solid rgba(139, 233, 253, 0.35);
+    border-radius: 5px;
+    background: var(--dark);
+    color: var(--primary);
+    font: inherit;
+    cursor: pointer;
+}
+
+.qualifications-button:hover,
+.certs-close:hover {
+    border-color: var(--primary);
+    color: var(--light);
+}
+
+.certs-status {
+    color: rgba(248, 248, 242, 0.72);
+}
+
+.certs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 16px;
+}
+
+.cert-card {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid rgba(139, 233, 253, 0.2);
+    border-radius: 6px;
+    background: var(--dark);
+}
+
+.cert-card a {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.cert-card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    background: var(--darker);
+}
+
+.cert-file-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: var(--darker);
+    color: #ff8a80;
+}
+
+.cert-file-preview i {
+    font-size: 2.5rem;
+}
+
+.cert-file-preview span {
+    color: var(--light);
+    font-size: 0.9rem;
+}
+
+.cert-card-copy {
+    padding: 12px;
+}
+
+.cert-card-copy h3 {
+    margin: 0 0 4px;
+    color: var(--primary);
+    font-size: 1rem;
+}
+
+.cert-card-copy p {
+    margin: 0;
+    color: rgba(248, 248, 242, 0.72);
+    font-size: 0.9rem;
+}
+
+.certs-dialog {
+    width: min(900px, calc(100% - 32px));
+    max-width: 900px;
+    max-height: min(85vh, 900px);
+    padding: 24px;
+    overflow: auto;
+    border: 1px solid rgba(139, 233, 253, 0.3);
+    border-radius: 8px;
+    background: var(--darker);
+    color: var(--light);
+}
+
+.certs-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.78);
+}
+
+.certs-close {
+    width: 40px;
+    padding: 0;
+    flex: 0 0 40px;
+}
+
+.certs-search-label {
+    display: block;
+    margin: 12px 0 6px;
+    font-size: 0.9rem;
+}
+
+.certs-search-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 12px;
+    border: 1px solid rgba(139, 233, 253, 0.3);
+    border-radius: 5px;
+    background: var(--dark);
+    color: var(--primary);
+}
+
+.certs-search-wrap input {
+    width: 100%;
+    min-height: 42px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--light);
+    font: inherit;
+}
+
+.certs-search-wrap:focus-within {
+    border-color: var(--primary);
+}
+
+.certs-grid-all {
+    margin-bottom: 4px;
+}
+
+@media (max-width: 480px) {
+    .qualifications-heading {
+        align-items: flex-start;
+    }
+
+    .qualifications-heading h2 {
+        max-width: 70%;
+    }
+
+    .certs-dialog {
+        padding: 16px;
+    }
+}
+
 .languages-box {
     background: var(--darker);
     border-radius: 10px;

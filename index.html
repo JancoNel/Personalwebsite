@@ -33,6 +33,7 @@
 
         <nav>
             <a href="#about"><i class="fas fa-user"></i> About</a>
+            <a href="#qualifications"><i class="fas fa-award"></i> Qualifications</a>
             <a href="#skills"><i class="fas fa-code"></i> Skills</a>
             <a href="#stats"><i class="fas fa-chart-line"></i> Stats</a>
             <a href="#projects"><i class="fas fa-project-diagram"></i> Projects</a>
@@ -46,6 +47,33 @@
             <p>I've spent significant time developing, reverse-engineering and analyzing obfuscated malware. Offensive security remains a skill I maintain and occasionally explore, but my current passion leans toward algorithmic trading and data-driven automation.</p>
             <p>My work involves open-source security projects and creative automation, blending adversarial thinking with practical problem-solving close to the system level.</p>
         </section>             
+
+        <section id="qualifications" class="section">
+            <div class="qualifications-heading">
+                <h2><i class="fas fa-award"></i> Qualifications</h2>
+                <button id="show-all-certs" class="qualifications-button" type="button" hidden>
+                    <i class="fas fa-expand-alt" aria-hidden="true"></i> View all
+                </button>
+            </div>
+            <p id="certs-status" class="certs-status" aria-live="polite">Loading qualifications...</p>
+            <div id="certs-preview" class="certs-grid" aria-label="Recent qualifications"></div>
+        </section>
+
+        <dialog id="certs-dialog" class="certs-dialog" aria-labelledby="certs-dialog-title">
+            <div class="certs-dialog-header">
+                <h2 id="certs-dialog-title">All qualifications</h2>
+                <button id="close-certs" class="certs-close" type="button" aria-label="Close qualifications">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+            <label class="certs-search-label" for="certs-search">Search qualifications</label>
+            <div class="certs-search-wrap">
+                <i class="fas fa-search" aria-hidden="true"></i>
+                <input id="certs-search" type="search" placeholder="Search title, issuer, or filename">
+            </div>
+            <p id="certs-results-status" class="certs-status" aria-live="polite"></p>
+            <div id="certs-all" class="certs-grid certs-grid-all"></div>
+        </dialog>
 
         <div class="centered-boxes">
             <!-- Hobbies -->
@@ -204,6 +232,7 @@
         </footer>
     </div>
 
-    <script src="main.js"></script>
+    <script src="scripts/main.js"></script>
+    <script src="scripts/certs.js"></script>
 </body>
 </html>
