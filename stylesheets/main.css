@@ -117,7 +117,8 @@ h2:hover::after {
 
 .certs-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+    grid-template-columns: repeat(auto-fill, 96px);
+    justify-content: start;
     gap: 12px;
 }
 
@@ -163,12 +164,12 @@ h2:hover::after {
 }
 
 .cert-file-preview i {
-    font-size: 2.5rem;
+    font-size: 1.6rem;
 }
 
 .cert-file-preview span {
     color: var(--light);
-    font-size: 0.9rem;
+    font-size: 0.7rem;
 }
 
 .cert-card-copy {
@@ -180,6 +181,7 @@ h2:hover::after {
     color: var(--primary);
     font-size: 0.82rem;
     line-height: 1.35;
+    overflow-wrap: anywhere;
 }
 
 .cert-card-copy p {
@@ -332,7 +334,7 @@ h2:hover::after {
     }
 
     .certs-grid {
-        grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+        grid-template-columns: repeat(auto-fill, 80px);
         gap: 8px;
     }
 }

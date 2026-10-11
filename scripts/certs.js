@@ -110,8 +110,8 @@ function renderAllCertificates(query = '') {
 
     allCerts.replaceChildren(...matches.map(createCertificateCard));
     resultsStatus.textContent = matches.length
-        ? `${matches.length} qualification${matches.length === 1 ? '' : 's'}`
-        : 'No qualifications match your search.';
+        ? `${matches.length} result${matches.length === 1 ? '' : 's'}`
+        : 'No results match your search.';
 }
 
 showAllButton.addEventListener('click', () => {
@@ -165,10 +165,10 @@ fetch('certs/certs.json')
         if (qualifications.length > 0) showAllButton.hidden = false;
 
         status.textContent = qualifications.length
-            ? `${qualifications.length} qualification${qualifications.length === 1 ? '' : 's'} listed.`
-            : 'No qualifications added yet.';
+            ? `${qualifications.length} item${qualifications.length === 1 ? '' : 's'} listed.`
+            : 'No qualifications or awards added yet.';
     })
     .catch(error => {
-        status.textContent = 'Qualifications could not be loaded.';
+        status.textContent = 'Qualifications and awards could not be loaded.';
         console.error(error);
     });
