@@ -38,6 +38,16 @@ def make_slug(title: str) -> str:
 def build_post(title: str, posted: date, body_html: str) -> str:
     safe_title = escape(title)
     posted_text = posted.isoformat()
+    template_path = BLOGS_DIR / "template.html"
+
+    if template_path.exists():
+        template = template_path.read_text(encoding="utf-8")
+        return (
+            template.replace("{{TITLE}}", safe_title)
+            .replace("{{DATE}}", posted_text)
+            .replace("{{CONTENT}}", body_html.strip())
+        )
+
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>

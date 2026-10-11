@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{TITLE}}</title>
+  <link rel="stylesheet" href="../stylesheets/main.css">
+  <link rel="stylesheet" href="../stylesheets/blog.css">
+</head>
+<body>
+  <div class="blog-container">
+    <a class="back-button" href="/blog.html"><i class="fas fa-arrow-left"></i> Back to Blog Index</a>
+
+    <header class="blog-header">
+      <p class="blog-kicker">Essay / Note / Log</p>
+      <h1>{{TITLE}}</h1>
+      <div class="date">Posted: {{DATE}}</div>
+    </header>
+
+    <article class="blog-post">
+      {{CONTENT}}
+    </article>
+  </div>
+</body>
+</html>
