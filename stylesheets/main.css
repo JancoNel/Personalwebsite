@@ -434,6 +434,25 @@ h2:hover::after {
     transform: scale(1.05);
 }
 
+.profile-subtitle,
+.profile-meta,
+.profile-pronouns {
+    margin: 0.2rem 0 0;
+    color: rgba(248, 248, 242, 0.78);
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+}
+
+.profile-meta strong {
+    color: var(--secondary);
+    font-weight: 700;
+}
+
+.profile-pronouns {
+    color: var(--primary);
+    font-weight: 600;
+}
+
 .stats-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -505,23 +524,31 @@ nav a:hover {
 .skills {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 10px 12px;
     justify-content: center;
-    margin-top: 1.5rem;
+    margin-top: 1.25rem;
 }
 
 .skill {
-    background: rgba(139, 233, 253, 0.1);
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    background: rgba(139, 233, 253, 0.08);
+    border: 1px solid rgba(139, 233, 253, 0.25);
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 0.88rem;
+    letter-spacing: 0.02em;
+    color: var(--light);
     transition: all 0.3s ease;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
 }
 
 .skill:hover {
     background: var(--primary);
+    border-color: var(--primary);
     color: var(--dark);
-    transform: translateY(-3px);
+    transform: translateY(-2px);
 }
 
 footer {
