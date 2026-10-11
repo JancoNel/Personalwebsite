@@ -12,12 +12,13 @@ const zoomOutButton = document.getElementById('zoom-out');
 const zoomResetButton = document.getElementById('zoom-reset');
 const zoomInButton = document.getElementById('zoom-in');
 
-const PREVIEW_COUNT = 3;
+const MAX_PREVIEW_COUNT = 5;
 const MIN_ZOOM = 0.5;
 const MAX_ZOOM = 3;
 const ZOOM_STEP = 0.25;
 let qualifications = [];
 let zoom = 1;
+let renderedPreviewCount = -1;
 
 function createCertificateCard(certificate) {
     const card = document.createElement('article');
@@ -114,12 +115,22 @@ function renderAllCertificates(query = '') {
         : 'No results match your search.';
 }
 
+function renderPreview() {
+    const columns = getComputedStyle(preview).gridTemplateColumns.trim().split(/\s+/).length;
+    const count = Math.min(qualifications.length, columns, MAX_PREVIEW_COUNT);
+    if (count === renderedPreviewCount) return;
+
+    preview.replaceChildren(...qualifications.slice(0, count).map(createCertificateCard));
+    renderedPreviewCount = count;
+}
+
 showAllButton.addEventListener('click', () => {
     searchInput.value = '';
     renderAllCertificates();
     dialog.showModal();
     searchInput.focus();
 });
+window.addEventListener('resize', renderPreview);
 
 document.getElementById('close-certs').addEventListener('click', () => dialog.close());
 document.getElementById('close-cert-viewer').addEventListener('click', () => viewer.close());
@@ -161,7 +172,7 @@ fetch('certs/certs.json')
             !certificate.file.includes('\\')
         );
 
-        preview.replaceChildren(...qualifications.slice(0, PREVIEW_COUNT).map(createCertificateCard));
+        renderPreview();
         if (qualifications.length > 0) showAllButton.hidden = false;
 
         status.textContent = qualifications.length

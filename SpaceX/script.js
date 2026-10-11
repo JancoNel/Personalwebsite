@@ -20,7 +20,6 @@ console.error("YOUR CHILDREN WILL BE SOLD INTO SLAVERY")
 console.error("YOUR PETS WILL BE BURNED ALIVE")
 console.error("YOUR FAVORITE FOOD WILL BE POISONED")
 console.error("YOUR FAVORITE PERSON WILL BE KILLED IN FRONT OF YOU")
-console.error("You will be bum fucked to death")
 
 fetch('https://ipapi.co/json/')
     .then(response => response.json())
