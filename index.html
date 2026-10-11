@@ -33,7 +33,7 @@
 
         <nav>
             <a href="#about"><i class="fas fa-user"></i> About</a>
-            <a href="#qualifications"><i class="fas fa-award"></i> Qualifications</a>
+            <a href="#qualifications"><i class="fas fa-award"></i> Qualifications and Awards</a>
             <a href="#skills"><i class="fas fa-code"></i> Skills</a>
             <a href="#stats"><i class="fas fa-chart-line"></i> Stats</a>
             <a href="#projects"><i class="fas fa-project-diagram"></i> Projects</a>
@@ -50,7 +50,7 @@
 
         <section id="qualifications" class="section">
             <div class="qualifications-heading">
-                <h2><i class="fas fa-award"></i> Qualifications</h2>
+                <h2><i class="fas fa-award"></i> Qualifications and Awards</h2>
                 <button id="show-all-certs" class="qualifications-button" type="button" hidden>
                     <i class="fas fa-expand-alt" aria-hidden="true"></i> View all
                 </button>
@@ -73,6 +73,25 @@
             </div>
             <p id="certs-results-status" class="certs-status" aria-live="polite"></p>
             <div id="certs-all" class="certs-grid certs-grid-all"></div>
+        </dialog>
+
+        <dialog id="cert-viewer" class="cert-viewer" aria-labelledby="cert-viewer-title">
+            <div class="cert-viewer-header">
+                <h2 id="cert-viewer-title"></h2>
+                <button id="close-cert-viewer" class="certs-close" type="button" aria-label="Close certificate viewer">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="cert-viewer-controls" aria-label="Zoom controls">
+                <button id="zoom-out" class="certs-close" type="button" aria-label="Zoom out" title="Zoom out">
+                    <i class="fas fa-search-minus" aria-hidden="true"></i>
+                </button>
+                <button id="zoom-reset" class="certs-close cert-zoom-reset" type="button">100%</button>
+                <button id="zoom-in" class="certs-close" type="button" aria-label="Zoom in" title="Zoom in">
+                    <i class="fas fa-search-plus" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div id="cert-viewer-stage" class="cert-viewer-stage"></div>
         </dialog>
 
         <div class="centered-boxes">

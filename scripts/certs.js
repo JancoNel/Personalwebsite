@@ -5,19 +5,29 @@ const dialog = document.getElementById('certs-dialog');
 const allCerts = document.getElementById('certs-all');
 const searchInput = document.getElementById('certs-search');
 const resultsStatus = document.getElementById('certs-results-status');
+const viewer = document.getElementById('cert-viewer');
+const viewerTitle = document.getElementById('cert-viewer-title');
+const viewerStage = document.getElementById('cert-viewer-stage');
+const zoomOutButton = document.getElementById('zoom-out');
+const zoomResetButton = document.getElementById('zoom-reset');
+const zoomInButton = document.getElementById('zoom-in');
 
 const PREVIEW_COUNT = 3;
+const MIN_ZOOM = 0.5;
+const MAX_ZOOM = 3;
+const ZOOM_STEP = 0.25;
 let qualifications = [];
+let zoom = 1;
 
 function createCertificateCard(certificate) {
     const card = document.createElement('article');
     card.className = 'cert-card';
 
-    const link = document.createElement('a');
-    link.href = `certs/${encodeURIComponent(certificate.file)}`;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    link.setAttribute('aria-label', `Open ${certificate.title}`);
+    const button = document.createElement('button');
+    button.className = 'cert-card-button';
+    button.type = 'button';
+    button.setAttribute('aria-label', `View ${certificate.title}`);
+    button.addEventListener('click', () => openCertificate(certificate));
 
     if (certificate.file.toLowerCase().endsWith('.pdf')) {
         const pdfPreview = document.createElement('div');
@@ -30,13 +40,14 @@ function createCertificateCard(certificate) {
         const pdfLabel = document.createElement('span');
         pdfLabel.textContent = 'PDF certificate';
         pdfPreview.append(pdfIcon, pdfLabel);
-        link.append(pdfPreview);
+        button.append(pdfPreview);
     } else {
         const image = document.createElement('img');
+        image.className = 'cert-thumbnail-image';
         image.src = `certs/${encodeURIComponent(certificate.file)}`;
         image.alt = certificate.title;
         image.loading = 'lazy';
-        link.append(image);
+        button.append(image);
     }
 
     const copy = document.createElement('div');
@@ -46,14 +57,45 @@ function createCertificateCard(certificate) {
     title.textContent = certificate.title;
     copy.append(title);
 
-    if (certificate.issuer || certificate.date) {
+    if (certificate.issuer) {
         const details = document.createElement('p');
-        details.textContent = [certificate.issuer, certificate.date].filter(Boolean).join(' · ');
+        details.textContent = certificate.issuer;
         copy.append(details);
     }
 
-    card.append(link, copy);
+    card.append(button, copy);
     return card;
+}
+
+function updateZoom() {
+    viewerStage.style.setProperty('--cert-zoom', zoom);
+    zoomResetButton.textContent = `${Math.round(zoom * 100)}%`;
+    zoomOutButton.disabled = zoom <= MIN_ZOOM;
+    zoomInButton.disabled = zoom >= MAX_ZOOM;
+}
+
+function openCertificate(certificate) {
+    viewerTitle.textContent = certificate.title;
+    viewerStage.replaceChildren();
+    zoom = 1;
+
+    const fileUrl = `certs/${encodeURIComponent(certificate.file)}`;
+    if (certificate.file.toLowerCase().endsWith('.pdf')) {
+        const documentFrame = document.createElement('iframe');
+        documentFrame.className = 'cert-viewer-document';
+        documentFrame.src = fileUrl;
+        documentFrame.title = certificate.title;
+        viewerStage.append(documentFrame);
+    } else {
+        const image = document.createElement('img');
+        image.className = 'cert-viewer-image';
+        image.src = fileUrl;
+        image.alt = certificate.title;
+        viewerStage.append(image);
+    }
+
+    updateZoom();
+    viewer.showModal();
 }
 
 function renderAllCertificates(query = '') {
@@ -80,9 +122,25 @@ showAllButton.addEventListener('click', () => {
 });
 
 document.getElementById('close-certs').addEventListener('click', () => dialog.close());
+document.getElementById('close-cert-viewer').addEventListener('click', () => viewer.close());
 searchInput.addEventListener('input', () => renderAllCertificates(searchInput.value));
 dialog.addEventListener('click', event => {
     if (event.target === dialog) dialog.close();
+});
+viewer.addEventListener('click', event => {
+    if (event.target === viewer) viewer.close();
+});
+zoomOutButton.addEventListener('click', () => {
+    zoom = Math.max(MIN_ZOOM, zoom - ZOOM_STEP);
+    updateZoom();
+});
+zoomResetButton.addEventListener('click', () => {
+    zoom = 1;
+    updateZoom();
+});
+zoomInButton.addEventListener('click', () => {
+    zoom = Math.min(MAX_ZOOM, zoom + ZOOM_STEP);
+    updateZoom();
 });
 
 fetch('certs/certs.json')
