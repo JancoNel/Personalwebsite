@@ -20,7 +20,7 @@ let qualifications = [];
 let zoom = 1;
 let renderedPreviewCount = -1;
 
-function createCertificateCard(certificate) {
+function createCertificateCard(certificate, showTags = false) {
     const card = document.createElement('article');
     card.className = 'cert-card';
 
@@ -65,7 +65,7 @@ function createCertificateCard(certificate) {
     }
 
     const tags = certificate.tags || [];
-    if (tags.length) {
+    if (showTags && tags.length) {
         const tagList = document.createElement('div');
         tagList.className = 'cert-card-tags';
         tagList.setAttribute('aria-label', 'Certificate categories and tags');
@@ -128,7 +128,7 @@ function renderAllCertificates(query = '') {
         return searchable.includes(normalizedQuery);
     });
 
-    allCerts.replaceChildren(...matches.map(createCertificateCard));
+    allCerts.replaceChildren(...matches.map(certificate => createCertificateCard(certificate, true)));
     resultsStatus.textContent = matches.length
         ? `${matches.length} result${matches.length === 1 ? '' : 's'}`
         : 'No results match your search.';
@@ -139,7 +139,7 @@ function renderPreview() {
     const count = Math.min(qualifications.length, columns, MAX_PREVIEW_COUNT);
     if (count === renderedPreviewCount) return;
 
-    preview.replaceChildren(...qualifications.slice(0, count).map(createCertificateCard));
+    preview.replaceChildren(...qualifications.slice(0, count).map(certificate => createCertificateCard(certificate)));
     renderedPreviewCount = count;
 }
 
