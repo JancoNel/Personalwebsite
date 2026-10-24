@@ -64,6 +64,20 @@ function createCertificateCard(certificate) {
         copy.append(details);
     }
 
+    const tags = certificate.tags || [];
+    if (tags.length) {
+        const tagList = document.createElement('div');
+        tagList.className = 'cert-card-tags';
+        tagList.setAttribute('aria-label', 'Certificate categories and tags');
+        tags.forEach(tag => {
+            const tagElement = document.createElement('span');
+            tagElement.className = 'cert-card-tag';
+            tagElement.textContent = tag;
+            tagList.append(tagElement);
+        });
+        copy.append(tagList);
+    }
+
     card.append(button, copy);
     return card;
 }
@@ -102,7 +116,12 @@ function openCertificate(certificate) {
 function renderAllCertificates(query = '') {
     const normalizedQuery = query.trim().toLocaleLowerCase();
     const matches = qualifications.filter(certificate => {
-        const searchable = [certificate.title, certificate.issuer, certificate.file]
+        const searchable = [
+            certificate.title,
+            certificate.issuer,
+            certificate.file,
+            ...(certificate.tags || [])
+        ]
             .filter(Boolean)
             .join(' ')
             .toLocaleLowerCase();
@@ -170,7 +189,12 @@ fetch('certs/certs.json')
             certificate.title.trim() &&
             !certificate.file.includes('/') &&
             !certificate.file.includes('\\')
-        );
+        ).map(certificate => ({
+            ...certificate,
+            tags: Array.isArray(certificate.tags)
+                ? certificate.tags.filter(tag => typeof tag === 'string' && tag.trim())
+                : []
+        }));
 
         renderPreview();
         if (qualifications.length > 0) showAllButton.hidden = false;

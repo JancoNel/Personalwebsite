@@ -3,31 +3,42 @@
     "file": "first_aid.jpg",
     "title": "Level 3 First Aid Certification",
     "issuer": "BTPROSAFETY",
-    "date": "24/06/2026"
+    "date": "24/06/2026",
+    "tags": ["Professional"]
   },
   {
     "file": "ACM.pdf",
     "title": "Arena Candidate Master Chess Title Certificate",
     "issuer": "FIDE",
-    "date":"2026"
+    "date": "2026",
+    "tags": ["Chess"]
   },
   {
-        "file": "3j.jpg",
-        "title": "3 Year chess league participation",
-        "issuer": "Hoerskool Centurion",
-        "date":"2026"
-   },
-   {
-        "file": "beste.jpg",
-        "title": "Best Senior Chess Player",
-        "issuer": "Hoerskool Centurion",
-        "date":"2026"
-
-    },
-    {
-          "file": "Tshw.jpg",
-          "title": "Tswanne Chess B team",
-          "issuer": "Tswanne Chess",
-          "date":"2026"
-     }
+    "file": "Chess_prov_colours.pdf",
+    "title": "Gauteng Chess Provincial Federation Colours",
+    "issuer": "Gauteng Chess",
+    "date": "19/10/2026",
+    "tags": ["Chess"]
+  },
+  {
+    "file": "beste.jpg",
+    "title": "Best Senior Chess Player",
+    "issuer": "Hoerskool Centurion",
+    "date": "2026",
+    "tags": ["Chess"]
+  },
+  {
+    "file": "Tshw.jpg",
+    "title": "Tswanne Chess B team",
+    "issuer": "Tswanne Chess",
+    "date": "2026",
+    "tags": ["Chess"]
+  },
+  {
+    "file": "3j.jpg",
+    "title": "3 Year chess league participation",
+    "issuer": "Hoerskool Centurion",
+    "date": "2026",
+    "tags": ["Chess"]
+  }
 ]
