@@ -157,24 +157,19 @@ h2:hover::after {
 }
 
 .cert-file-preview {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 10px;
+    position: relative;
     width: 100%;
     aspect-ratio: 4 / 3;
+    overflow: hidden;
     background: var(--darker);
-    color: #ff8a80;
 }
 
-.cert-file-preview i {
-    font-size: 1.6rem;
-}
-
-.cert-file-preview span {
-    color: var(--light);
-    font-size: 0.7rem;
+.cert-file-preview iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    pointer-events: none;
 }
 
 .cert-card-copy {

@@ -34,13 +34,13 @@ function createCertificateCard(certificate, showTags = false) {
         const pdfPreview = document.createElement('div');
         pdfPreview.className = 'cert-file-preview';
 
-        const pdfIcon = document.createElement('i');
-        pdfIcon.className = 'fas fa-file-pdf';
-        pdfIcon.setAttribute('aria-hidden', 'true');
-
-        const pdfLabel = document.createElement('span');
-        pdfLabel.textContent = 'PDF certificate';
-        pdfPreview.append(pdfIcon, pdfLabel);
+        const documentFrame = document.createElement('iframe');
+        documentFrame.src = `certs/${encodeURIComponent(certificate.file)}#page=1&toolbar=0&navpanes=0&zoom=page-fit`;
+        documentFrame.title = `${certificate.title} preview`;
+        documentFrame.loading = 'lazy';
+        documentFrame.tabIndex = -1;
+        documentFrame.setAttribute('aria-hidden', 'true');
+        pdfPreview.append(documentFrame);
         button.append(pdfPreview);
     } else {
         const image = document.createElement('img');
