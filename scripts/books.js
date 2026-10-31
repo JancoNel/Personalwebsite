@@ -7,11 +7,13 @@ const booksSearch = document.getElementById('books-search');
 const booksResultsStatus = document.getElementById('books-results-status');
 
 const MAX_BOOK_PREVIEW_COUNT = 3;
+const COMMENT_COLLAPSE_LENGTH = 160;
 let books = [];
 
-function createBookCard(book) {
+function createBookCard(book, compact = false) {
     const card = document.createElement('article');
     card.className = 'book-card';
+    if (compact) card.classList.add('book-card-compact');
 
     const cover = document.createElement('img');
     cover.className = 'book-cover';
@@ -35,6 +37,22 @@ function createBookCard(book) {
     comment.className = 'book-comment';
     comment.textContent = book.comment;
     copy.append(comment);
+
+    if (book.comment.length > COMMENT_COLLAPSE_LENGTH) {
+        comment.classList.add('book-comment-collapsed');
+        const toggle = document.createElement('button');
+        toggle.className = 'book-comment-toggle';
+        toggle.type = 'button';
+        toggle.textContent = 'View more';
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.addEventListener('click', () => {
+            const expanded = toggle.getAttribute('aria-expanded') === 'true';
+            comment.classList.toggle('book-comment-collapsed', expanded);
+            toggle.setAttribute('aria-expanded', String(!expanded));
+            toggle.textContent = expanded ? 'View more' : 'View less';
+        });
+        copy.append(toggle);
+    }
 
     if (book.rating !== undefined) {
         const rating = document.createElement('p');
@@ -118,7 +136,11 @@ fetch('books/books.json')
                 : []
         }));
 
-        booksPreview.replaceChildren(...books.slice(0, MAX_BOOK_PREVIEW_COUNT).map(createBookCard));
+        booksPreview.replaceChildren(
+            ...books
+                .slice(0, MAX_BOOK_PREVIEW_COUNT)
+                .map(book => createBookCard(book, true))
+        );
         if (books.length > 0) showAllBooksButton.hidden = false;
 
         booksStatus.textContent = books.length
