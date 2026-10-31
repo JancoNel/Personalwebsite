@@ -6,14 +6,13 @@ const allBooks = document.getElementById('books-all');
 const booksSearch = document.getElementById('books-search');
 const booksResultsStatus = document.getElementById('books-results-status');
 
-const MAX_BOOK_PREVIEW_COUNT = 3;
+const MAX_BOOK_PREVIEW_COUNT = 5;
 const COMMENT_COLLAPSE_LENGTH = 160;
 let books = [];
 
-function createBookCard(book, compact = false) {
+function createBookCard(book) {
     const card = document.createElement('article');
     card.className = 'book-card';
-    if (compact) card.classList.add('book-card-compact');
 
     const cover = document.createElement('img');
     cover.className = 'book-cover';
@@ -93,6 +92,13 @@ function renderAllBooks(query = '') {
         : 'No books match your search.';
 }
 
+function renderBookPreview() {
+    const columns = getComputedStyle(booksPreview)
+        .gridTemplateColumns.trim().split(/\s+/).length;
+    const count = Math.min(books.length, columns, MAX_BOOK_PREVIEW_COUNT);
+    booksPreview.replaceChildren(...books.slice(0, count).map(createBookCard));
+}
+
 document.getElementById('show-all-books').addEventListener('click', () => {
     booksSearch.value = '';
     renderAllBooks();
@@ -104,6 +110,7 @@ booksSearch.addEventListener('input', () => renderAllBooks(booksSearch.value));
 booksDialog.addEventListener('click', event => {
     if (event.target === booksDialog) booksDialog.close();
 });
+window.addEventListener('resize', renderBookPreview);
 
 fetch('books/books.json')
     .then(response => {
@@ -136,11 +143,7 @@ fetch('books/books.json')
                 : []
         }));
 
-        booksPreview.replaceChildren(
-            ...books
-                .slice(0, MAX_BOOK_PREVIEW_COUNT)
-                .map(book => createBookCard(book, true))
-        );
+        renderBookPreview();
         if (books.length > 0) showAllBooksButton.hidden = false;
 
         booksStatus.textContent = books.length
