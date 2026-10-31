@@ -1,19 +1,26 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 import tkinter as tk
 import unicodedata
 from datetime import date, datetime, time, timezone
 from html import escape
+from html.parser import HTMLParser
 from pathlib import Path
+from pathlib import PurePosixPath
 from tkinter import messagebox, ttk
+from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parent
 BLOGS_DIR = ROOT / "blogs"
 INDEX_PATH = BLOGS_DIR / "blog-dex.json"
 CERTS_DIR = ROOT / "certs"
 CERTS_PATH = CERTS_DIR / "certs.json"
+BOOKS_DIR = ROOT / "books"
+BOOKS_PATH = BOOKS_DIR / "books.json"
+INDEX_HTML_PATH = ROOT / "index.html"
 
 COLORS = {
     "background": "#171816",
@@ -192,6 +199,198 @@ def remove_certificate(
     return [dict(entry) for entry in entries if entry["file"] != file_name]
 
 
+def _validate_book_cover(cover: str) -> str:
+    cover = cover.strip()
+    cover_path = PurePosixPath(cover)
+    if (
+        not cover
+        or "\\" in cover
+        or cover_path.is_absolute()
+        or len(cover_path.parts) < 2
+        or cover_path.parts[0] != "books"
+        or any(part in {"", ".", ".."} for part in cover_path.parts)
+        or cover_path.suffix.lower() not in {".png", ".jpg", ".jpeg"}
+    ):
+        raise ValueError("Choose a PNG or JPEG cover image from the books/ folder.")
+    return cover_path.as_posix()
+
+
+def read_books(path: Path = BOOKS_PATH) -> list[dict[str, object]]:
+    entries = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(entries, list):
+        raise ValueError("The book manifest must contain a JSON list.")
+
+    for entry in entries:
+        if (
+            not isinstance(entry, dict)
+            or not all(
+                isinstance(entry.get(field), str) and entry[field].strip()
+                for field in ("cover", "title", "author", "comment")
+            )
+        ):
+            raise ValueError("Every book needs a cover, title, author, and comment.")
+        _validate_book_cover(entry["cover"])
+        tags = entry.get("tags", [])
+        if not isinstance(tags, list) or any(
+            not isinstance(tag, str) or not tag.strip() for tag in tags
+        ):
+            raise ValueError("Book categories must be a list of non-empty strings.")
+        if "rating" in entry and (
+            type(entry["rating"]) is not int or not 1 <= entry["rating"] <= 5
+        ):
+            raise ValueError("Book ratings must be whole numbers from 1 to 5.")
+    return entries
+
+
+def write_books(entries: list[dict[str, object]], path: Path = BOOKS_PATH) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(entries, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
+
+
+def upsert_book(
+    entries: list[dict[str, object]],
+    cover: str,
+    title: str,
+    author: str,
+    comment: str,
+    categories: str,
+    rating_text: str,
+    existing_cover: str = "",
+) -> list[dict[str, object]]:
+    cover = _validate_book_cover(cover)
+    title = title.strip()
+    author = author.strip()
+    comment = comment.strip()
+    if not title or not author or not comment:
+        raise ValueError("Enter a book title, author, and personal comment.")
+
+    tags = [tag.strip() for tag in categories.split(",") if tag.strip()]
+    book: dict[str, object] = {
+        "cover": cover,
+        "title": title,
+        "author": author,
+        "comment": comment,
+    }
+    if tags:
+        book["tags"] = tags
+    if rating_text.strip():
+        try:
+            rating = int(rating_text.strip())
+        except ValueError as error:
+            raise ValueError("Rating must be a whole number from 1 to 5.") from error
+        if not 1 <= rating <= 5:
+            raise ValueError("Rating must be a whole number from 1 to 5.")
+        book["rating"] = rating
+
+    updated = [dict(entry) for entry in entries]
+    target_cover = existing_cover or cover
+    matching_index = next(
+        (
+            index
+            for index, entry in enumerate(updated)
+            if entry.get("cover") == target_cover
+        ),
+        None,
+    )
+    if any(
+        entry.get("cover") == cover and index != matching_index
+        for index, entry in enumerate(updated)
+    ):
+        raise ValueError("That cover is already assigned to another book.")
+
+    if matching_index is None:
+        updated.append(book)
+    else:
+        updated[matching_index] = book
+    return updated
+
+
+def remove_book(
+    entries: list[dict[str, object]], cover: str
+) -> list[dict[str, object]]:
+    return [dict(entry) for entry in entries if entry.get("cover") != cover]
+
+
+class _PageResourceParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.resources: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        attributes = dict(attrs)
+        if tag == "script" and attributes.get("src"):
+            self.resources.append(attributes["src"])
+        elif tag == "link" and "stylesheet" in (
+            attributes.get("rel") or ""
+        ).lower().split():
+            if attributes.get("href"):
+                self.resources.append(attributes["href"])
+
+
+def estimate_page_load(root: Path = ROOT) -> tuple[int, int]:
+    index_path = root / "index.html"
+    parser = _PageResourceParser()
+    parser.feed(index_path.read_text(encoding="utf-8"))
+    assets = {index_path.resolve()}
+
+    def add_asset(relative_path: str) -> Path:
+        parsed_path = urlsplit(relative_path)
+        if parsed_path.scheme or parsed_path.netloc:
+            raise ValueError(f"Expected a local asset path, got '{relative_path}'.")
+        decoded_path = unquote(parsed_path.path).lstrip("/")
+        asset = (root / decoded_path).resolve()
+        try:
+            asset.relative_to(root.resolve())
+        except ValueError as error:
+            raise ValueError(
+                f"Asset path escapes the website: '{relative_path}'."
+            ) from error
+        if not asset.is_file():
+            raise FileNotFoundError(f"Referenced local asset was not found: {relative_path}")
+        assets.add(asset)
+        return asset
+
+    for resource in parser.resources:
+        parsed_resource = urlsplit(resource)
+        if not parsed_resource.scheme and not parsed_resource.netloc:
+            add_asset(resource)
+
+    for manifest_path in (root / "certs" / "certs.json", root / "books" / "books.json"):
+        add_asset(manifest_path.relative_to(root).as_posix())
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        if not isinstance(manifest, list):
+            raise ValueError(
+                f"{manifest_path.relative_to(root)} must contain a JSON list."
+            )
+        for entry in manifest:
+            if not isinstance(entry, dict):
+                raise ValueError(
+                    f"{manifest_path.relative_to(root)} contains an invalid entry."
+                )
+            if manifest_path.parent.name == "certs":
+                file_name = entry.get("file")
+                if isinstance(file_name, str) and file_name:
+                    add_asset(f"certs/{file_name}")
+            else:
+                cover = entry.get("cover")
+                if isinstance(cover, str) and cover:
+                    add_asset(cover)
+
+    total_bytes = sum(asset.stat().st_size for asset in assets)
+    return total_bytes, len(assets)
+
+
+def format_file_size(size_bytes: int) -> str:
+    size = float(size_bytes)
+    for unit in ("B", "KB", "MB", "GB"):
+        if size < 1024 or unit == "GB":
+            return f"{size:.1f} {unit}" if unit != "B" else f"{size:.0f} B"
+        size /= 1024
+    return f"{size_bytes} B"
+
+
 class AdminApp(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
@@ -206,13 +405,22 @@ class AdminApp(tk.Tk):
 
         self.blog_tab = ttk.Frame(notebook, style="App.TFrame", padding=18)
         self.certs_tab = ttk.Frame(notebook, style="App.TFrame", padding=18)
+        self.books_tab = ttk.Frame(notebook, style="App.TFrame", padding=18)
+        self.load_tab = ttk.Frame(notebook, style="App.TFrame", padding=18)
         notebook.add(self.blog_tab, text="Blog Post")
         notebook.add(self.certs_tab, text="Certificates")
+        notebook.add(self.books_tab, text="Books")
+        notebook.add(self.load_tab, text="Page Load")
 
         self._build_blog_tab()
         self._build_certs_tab()
+        self._build_books_tab()
+        self._build_load_tab()
         self.refresh_certificate_files()
         self.refresh_certificates()
+        self.refresh_book_files()
+        self.refresh_books()
+        self.refresh_page_load_estimate()
 
     def _configure_style(self) -> None:
         style = ttk.Style(self)
@@ -536,6 +744,297 @@ class AdminApp(tk.Tk):
         self.certificate_issuer.set("")
         self.certificate_date.set("")
         self.certificate_tree.selection_remove(self.certificate_tree.selection())
+
+    def _build_books_tab(self) -> None:
+        self.books_tab.columnconfigure(0, weight=1)
+        self.books_tab.rowconfigure(4, weight=1)
+        ttk.Label(self.books_tab, text="Manage books", style="Header.TLabel").grid(
+            row=0, column=0, sticky="w", pady=(0, 4)
+        )
+        ttk.Label(
+            self.books_tab,
+            text="Choose a PNG or JPEG cover from books/, then add or edit its book details.",
+            style="Muted.TLabel",
+        ).grid(row=1, column=0, sticky="w", pady=(0, 14))
+
+        fields = ttk.Frame(self.books_tab, style="App.TFrame")
+        fields.grid(row=2, column=0, sticky="ew")
+        fields.columnconfigure(1, weight=1)
+        for row, label in enumerate(
+            ("Cover", "Title", "Author", "Personal comment", "Categories", "Rating")
+        ):
+            ttk.Label(fields, text=label).grid(
+                row=row,
+                column=0,
+                sticky="nw" if row == 3 else "w",
+                padx=(0, 12),
+                pady=5,
+            )
+
+        self.book_cover = tk.StringVar()
+        self.book_title = tk.StringVar()
+        self.book_author = tk.StringVar()
+        self.book_categories = tk.StringVar()
+        self.book_rating = tk.StringVar()
+        self.selected_book_cover = ""
+        self.book_file_picker = ttk.Combobox(
+            fields, textvariable=self.book_cover, state="readonly"
+        )
+        self.book_file_picker.grid(row=0, column=1, sticky="ew", pady=5)
+        ttk.Button(fields, text="Refresh files", command=self.refresh_book_files).grid(
+            row=0, column=2, padx=(8, 0), pady=5
+        )
+        ttk.Entry(fields, textvariable=self.book_title).grid(
+            row=1, column=1, columnspan=2, sticky="ew", pady=5
+        )
+        ttk.Entry(fields, textvariable=self.book_author).grid(
+            row=2, column=1, columnspan=2, sticky="ew", pady=5
+        )
+        self.book_comment_input = tk.Text(
+            fields,
+            wrap="word",
+            undo=True,
+            height=4,
+            background=COLORS["surface"],
+            foreground=COLORS["text"],
+            insertbackground=COLORS["text"],
+            selectbackground=COLORS["selection"],
+            relief="flat",
+            padx=8,
+            pady=7,
+        )
+        self.book_comment_input.grid(
+            row=3, column=1, columnspan=2, sticky="ew", pady=5
+        )
+        ttk.Entry(fields, textvariable=self.book_categories).grid(
+            row=4, column=1, columnspan=2, sticky="ew", pady=5
+        )
+        self.book_rating_picker = ttk.Combobox(
+            fields,
+            textvariable=self.book_rating,
+            values=("", "1", "2", "3", "4", "5"),
+            state="readonly",
+            width=8,
+        )
+        self.book_rating_picker.grid(row=5, column=1, sticky="w", pady=5)
+
+        actions = ttk.Frame(self.books_tab, style="App.TFrame")
+        actions.grid(row=3, column=0, sticky="ew", pady=(10, 16))
+        ttk.Button(actions, text="Add / update", command=self.save_book).pack(
+            side="left"
+        )
+        ttk.Button(actions, text="Remove selected", command=self.delete_book).pack(
+            side="left", padx=(8, 0)
+        )
+        ttk.Button(actions, text="Clear", command=self.clear_book_form).pack(
+            side="left", padx=(8, 0)
+        )
+
+        self.book_tree = ttk.Treeview(
+            self.books_tab,
+            columns=("title", "author", "cover", "categories", "rating"),
+            show="headings",
+            selectmode="browse",
+        )
+        for column, heading, width in (
+            ("title", "Title", 150),
+            ("author", "Author", 100),
+            ("cover", "Cover", 150),
+            ("categories", "Categories", 120),
+            ("rating", "Rating", 55),
+        ):
+            self.book_tree.heading(column, text=heading)
+            self.book_tree.column(
+                column, width=width, minwidth=65, stretch=column == "title"
+            )
+        self.book_tree.grid(row=4, column=0, sticky="nsew")
+        self.book_tree.bind("<<TreeviewSelect>>", self.select_book)
+
+        self.books_status = tk.StringVar(value="")
+        ttk.Label(
+            self.books_tab, textvariable=self.books_status, style="Muted.TLabel"
+        ).grid(row=5, column=0, sticky="w", pady=(10, 0))
+
+    def _build_load_tab(self) -> None:
+        self.load_tab.columnconfigure(0, weight=1)
+        ttk.Label(
+            self.load_tab, text="Index page load estimate", style="Header.TLabel"
+        ).grid(row=0, column=0, sticky="w", pady=(0, 8))
+        ttk.Label(
+            self.load_tab,
+            text=(
+                "Estimate the transfer time for index.html, its local styles and scripts, "
+                "the certificates and books manifests, and all listed cover/certificate files. "
+                "Remote assets, network latency, caching, compression, and browser rendering "
+                "are not included."
+            ),
+            style="Muted.TLabel",
+            wraplength=700,
+            justify="left",
+        ).grid(row=1, column=0, sticky="ew", pady=(0, 18))
+
+        controls = ttk.Frame(self.load_tab, style="App.TFrame")
+        controls.grid(row=2, column=0, sticky="w")
+        ttk.Label(controls, text="Connection speed (Mbps)").pack(side="left")
+        self.bandwidth_mbps = tk.StringVar(value="10")
+        ttk.Entry(
+            controls, textvariable=self.bandwidth_mbps, width=10
+        ).pack(side="left", padx=(10, 8))
+        ttk.Button(
+            controls, text="Estimate", command=self.refresh_page_load_estimate
+        ).pack(side="left")
+
+        self.page_load_status = tk.StringVar(value="")
+        ttk.Label(
+            self.load_tab,
+            textvariable=self.page_load_status,
+            justify="left",
+            wraplength=700,
+        ).grid(row=3, column=0, sticky="nw", pady=(20, 0))
+
+    def refresh_book_files(self) -> None:
+        BOOKS_DIR.mkdir(parents=True, exist_ok=True)
+        files = sorted(
+            path.relative_to(ROOT).as_posix()
+            for path in BOOKS_DIR.rglob("*")
+            if path.is_file() and path.suffix.lower() in {".png", ".jpg", ".jpeg"}
+        )
+        self.book_file_picker["values"] = files
+        if self.book_cover.get() not in files:
+            self.book_cover.set("")
+        if not files:
+            self.books_status.set("No PNG or JPEG cover files found in books/.")
+
+    def refresh_books(self) -> None:
+        try:
+            entries = read_books()
+        except (OSError, ValueError, json.JSONDecodeError) as error:
+            self.books_status.set(f"Could not read books/books.json: {error}")
+            entries = []
+
+        self.book_tree.delete(*self.book_tree.get_children())
+        for index, entry in enumerate(entries):
+            self.book_tree.insert(
+                "",
+                "end",
+                iid=f"book-{index}",
+                values=(
+                    entry["title"],
+                    entry["author"],
+                    entry["cover"],
+                    ", ".join(entry.get("tags", [])),
+                    entry.get("rating", ""),
+                ),
+            )
+        if entries:
+            self.books_status.set(
+                f"{len(entries)} book{'s' if len(entries) != 1 else ''} in the catalog."
+            )
+        elif not self.books_status.get().startswith("Could not read"):
+            self.books_status.set("No books in the catalog.")
+
+    def select_book(self, _event: tk.Event) -> None:
+        selection = self.book_tree.selection()
+        if not selection:
+            return
+        title, author, cover, categories, rating = self.book_tree.item(
+            selection[0], "values"
+        )
+        self.selected_book_cover = cover
+        self.book_cover.set(cover)
+        self.book_title.set(title)
+        self.book_author.set(author)
+        self.book_categories.set(categories)
+        self.book_rating.set(str(rating))
+        try:
+            entry = next(book for book in read_books() if book["cover"] == cover)
+        except (OSError, ValueError, json.JSONDecodeError, StopIteration) as error:
+            self.books_status.set(f"Could not load selected book: {error}")
+            return
+        self.book_comment_input.delete("1.0", "end")
+        self.book_comment_input.insert("1.0", entry["comment"])
+
+    def save_book(self) -> None:
+        cover = self.book_cover.get().strip()
+        if not cover or not (ROOT / PurePosixPath(cover)).is_file():
+            messagebox.showerror(
+                "Choose a book cover",
+                "Select a PNG or JPEG cover image from books/.",
+                parent=self,
+            )
+            return
+
+        try:
+            entries = read_books()
+            updated = upsert_book(
+                entries,
+                cover,
+                self.book_title.get(),
+                self.book_author.get(),
+                self.book_comment_input.get("1.0", "end-1c"),
+                self.book_categories.get(),
+                self.book_rating.get(),
+                self.selected_book_cover,
+            )
+            write_books(updated)
+        except (OSError, ValueError, json.JSONDecodeError) as error:
+            messagebox.showerror("Could not save book", str(error), parent=self)
+            return
+
+        self.refresh_books()
+        self.clear_book_form()
+
+    def delete_book(self) -> None:
+        selection = self.book_tree.selection()
+        if not selection:
+            messagebox.showinfo(
+                "Select a book", "Choose an entry to remove.", parent=self
+            )
+            return
+
+        cover = self.book_tree.item(selection[0], "values")[2]
+        if not messagebox.askyesno(
+            "Remove book entry",
+            f"Remove '{cover}' from books/books.json? The cover file will not be deleted.",
+            parent=self,
+        ):
+            return
+
+        try:
+            write_books(remove_book(read_books(), cover))
+        except (OSError, ValueError, json.JSONDecodeError) as error:
+            messagebox.showerror("Could not remove book", str(error), parent=self)
+            return
+
+        self.refresh_books()
+        self.clear_book_form()
+
+    def clear_book_form(self) -> None:
+        self.selected_book_cover = ""
+        self.book_cover.set("")
+        self.book_title.set("")
+        self.book_author.set("")
+        self.book_categories.set("")
+        self.book_rating.set("")
+        self.book_comment_input.delete("1.0", "end")
+        self.book_tree.selection_remove(self.book_tree.selection())
+
+    def refresh_page_load_estimate(self) -> None:
+        try:
+            bandwidth = float(self.bandwidth_mbps.get().strip())
+            if not math.isfinite(bandwidth) or bandwidth <= 0:
+                raise ValueError("Connection speed must be a positive number.")
+            total_bytes, asset_count = estimate_page_load()
+        except (OSError, ValueError, json.JSONDecodeError) as error:
+            self.page_load_status.set(f"Could not calculate estimate: {error}")
+            return
+
+        seconds = total_bytes * 8 / (bandwidth * 1_000_000)
+        self.page_load_status.set(
+            f"Local page assets: {format_file_size(total_bytes)} across "
+            f"{asset_count} files.\nEstimated transfer time at {bandwidth:g} Mbps: "
+            f"{seconds:.2f} seconds."
+        )
 
     def generate(self) -> None:
         try:

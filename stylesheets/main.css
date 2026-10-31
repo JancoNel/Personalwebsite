@@ -264,6 +264,58 @@ h2:hover::after {
     margin-bottom: 4px;
 }
 
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.book-card {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid rgba(139, 233, 253, 0.2);
+    border-radius: 8px;
+    background: var(--dark);
+}
+
+.book-cover {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    background: var(--darker);
+}
+
+.book-card-copy {
+    padding: 14px;
+}
+
+.book-card-copy h3 {
+    margin: 0;
+    color: var(--primary);
+    font-size: 1rem;
+}
+
+.book-author,
+.book-rating {
+    margin: 2px 0 10px;
+    color: rgba(248, 248, 242, 0.72);
+    font-size: 0.85rem;
+}
+
+.book-comment {
+    margin: 0;
+}
+
+.book-rating {
+    margin: 10px 0 0;
+    color: var(--accent);
+}
+
+.books-grid-all {
+    margin: 12px 0 4px;
+}
+
 .cert-viewer {
     width: min(1000px, calc(100% - 32px));
     max-width: 1000px;
